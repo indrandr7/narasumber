@@ -120,6 +120,11 @@
                         </a>
                     </li>
                     <li class="nav-item  ">
+                        <a href="{{ url('pengguna/gantipassword') }}" class="nav-link ">
+                            <i class="nav-icon fas fa-copy"></i>Menu Baru
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
                         <a href="{{ url('logout') }}" class="nav-link ">
                             <i class="nav-icon fas fa-sign-out-alt"></i> Logout
                         </a>
