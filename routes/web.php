@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\NarasumberController;
+use App\Http\Controllers\BagianController;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/auth', [LoginController::class, 'authenticate']);
@@ -39,5 +40,13 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/narasumber/edit', [NarasumberController::class, 'edit']);
     Route::post('/narasumber/saveupdate', [NarasumberController::class, 'saveupdate']);
     Route::post('/narasumber/delete', [NarasumberController::class, 'delete']);
+
+    Route::get('/bagian', [BagianController::class, 'index']);
+    Route::get('/bagian/getlist', [BagianController::class, 'getlist']);
+    Route::get('/bagian/add', [BagianController::class, 'add']);
+    Route::post('/bagian/save', [BagianController::class, 'save']);
+    Route::get('/bagian/edit', [BagianController::class, 'edit']);
+    Route::post('/bagian/saveupdate', [BagianController::class, 'saveupdate']);
+    Route::post('/bagian/delete', [BagianController::class, 'delete']);
 
 });
