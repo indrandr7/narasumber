@@ -120,14 +120,19 @@
                             <i class="nav-icon fas fa-copy"></i>Ganti Password2
                         </a>
                     </li>
-
-
-                    
+                   
                     <li class="nav-item  ">
                         <a href="{{ url('pengguna/gantipassword') }}" class="nav-link ">
                             <i class="nav-icon fas fa-copy"></i>Ganti Password3
                         </a>
                     </li>
+
+                    <li class="nav-item  ">
+                        <a href="{{ url('pengguna/gantipassword') }}" class="nav-link ">
+                            <i class="nav-icon fas fa-copy"></i>Ganti Password4
+                        </a>
+                    </li>
+
 
                     <li class="nav-item  ">
                         <a href="{{ url('logout') }}" class="nav-link ">
