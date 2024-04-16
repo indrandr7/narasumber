@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\NarasumberController;
 use App\Http\Controllers\BagianController;
+use App\Http\Controllers\BiroController;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/auth', [LoginController::class, 'authenticate']);
@@ -48,5 +49,13 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/bagian/edit', [BagianController::class, 'edit']);
     Route::post('/bagian/saveupdate', [BagianController::class, 'saveupdate']);
     Route::post('/bagian/delete', [BagianController::class, 'delete']);
+
+    Route::get('/biro', [BiroController::class, 'index']);
+    Route::get('/biro/getlist', [BiroController::class, 'getlist']);
+    Route::get('/biro/add', [BiroController::class, 'add']);
+    Route::post('/biro/save', [BiroController::class, 'save']);
+    Route::get('/biro/edit', [BiroController::class, 'edit']);
+    Route::post('/biro/saveupdate', [BiroController::class, 'saveupdate']);
+    Route::post('/biro/delete', [BiroController::class, 'delete']);
 
 });
