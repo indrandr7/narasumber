@@ -96,7 +96,12 @@
                             </li>
                             <li class="nav-item">
                                 <a href="{{ url('ppk') }}" class="nav-link ">
-                                    <i class="far fa-circle nav-icon"></i>PPK/Bendahara
+                                    <i class="far fa-circle nav-icon"></i>PPK
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('bendahara') }}" class="nav-link ">
+                                    <i class="far fa-circle nav-icon"></i>Bendahara
                                 </a>
                             </li>
                             <li class="nav-item">

@@ -6,6 +6,9 @@ use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\NarasumberController;
 use App\Http\Controllers\BagianController;
 use App\Http\Controllers\BiroController;
+use App\Http\Controllers\PpkController;
+use App\Http\Controllers\BendaharaController;
+use App\Http\Controllers\PenggunaController;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/auth', [LoginController::class, 'authenticate']);
@@ -57,5 +60,29 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/biro/edit', [BiroController::class, 'edit']);
     Route::post('/biro/saveupdate', [BiroController::class, 'saveupdate']);
     Route::post('/biro/delete', [BiroController::class, 'delete']);
+
+    Route::get('/ppk', [PpkController::class, 'index']);
+    Route::get('/ppk/getlist', [PpkController::class, 'getlist']);
+    Route::get('/ppk/add', [PpkController::class, 'add']);
+    Route::post('/ppk/save', [PpkController::class, 'save']);
+    Route::get('/ppk/edit', [PpkController::class, 'edit']);
+    Route::post('/ppk/saveupdate', [PpkController::class, 'saveupdate']);
+    Route::post('/ppk/delete', [PpkController::class, 'delete']);
+
+    Route::get('/bendahara', [BendaharaController::class, 'index']);
+    Route::get('/bendahara/getlist', [BendaharaController::class, 'getlist']);
+    Route::get('/bendahara/add', [BendaharaController::class, 'add']);
+    Route::post('/bendahara/save', [BendaharaController::class, 'save']);
+    Route::get('/bendahara/edit', [BendaharaController::class, 'edit']);
+    Route::post('/bendahara/saveupdate', [BendaharaController::class, 'saveupdate']);
+    Route::post('/bendahara/delete', [BendaharaController::class, 'delete']);
+
+    Route::get('/pengguna', [PenggunaController::class, 'index']);
+    Route::get('/pengguna/getlist', [PenggunaController::class, 'getlist']);
+    Route::get('/pengguna/add', [PenggunaController::class, 'add']);
+    Route::post('/pengguna/save', [PenggunaController::class, 'save']);
+    Route::get('/pengguna/edit', [PenggunaController::class, 'edit']);
+    Route::post('/pengguna/saveupdate', [PenggunaController::class, 'saveupdate']);
+    Route::post('/pengguna/delete', [PenggunaController::class, 'delete']);
 
 });
