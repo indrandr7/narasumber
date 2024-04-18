@@ -18,7 +18,7 @@ class PpkController extends Controller
     }
 
     public function getlist(){
-        $data = DB::table('ppk')->orderBy('id_ppk', 'asc')->get();
+        $data = DB::table('ppk')->where('is_delete', 'no')->orderBy('id_ppk', 'asc')->get();
 
         $datatable = DataTables::of($data)
             ->addIndexColumn()
@@ -121,7 +121,8 @@ class PpkController extends Controller
     public function delete(Request $req){
         $id = $req->post('id');
 
-        $hapus = DB::table('ppk')->where('id_ppk', $id)->delete();
+        // $hapus = DB::table('ppk')->where('id_ppk', $id)->delete();
+        $hapus = DB::table('ppk')->where('id_ppk', $id)->update(['is_delete' => 'yes']);
 
         if ($hapus){
             $response = ['result'=>'success', 'message'=>'Deleting data successfully'];

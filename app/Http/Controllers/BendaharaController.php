@@ -18,7 +18,7 @@ class BendaharaController extends Controller
     }
 
     public function getlist(){
-        $data = DB::table('bendahara')->orderBy('id_bendahara', 'asc')->get();
+        $data = DB::table('bendahara')->where('is_delete', 'no')->orderBy('id_bendahara', 'asc')->get();
 
         $datatable = DataTables::of($data)
             ->addIndexColumn()
@@ -121,7 +121,8 @@ class BendaharaController extends Controller
     public function delete(Request $req){
         $id = $req->post('id');
 
-        $hapus = DB::table('bendahara')->where('id_bendahara', $id)->delete();
+        // $hapus = DB::table('bendahara')->where('id_bendahara', $id)->delete();
+        $hapus = DB::table('bendahara')->where('id_bendahara', $id)->update('is_delete', 'yes');
 
         if ($hapus){
             $response = ['result'=>'success', 'message'=>'Deleting data successfully'];
