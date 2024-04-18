@@ -8,6 +8,19 @@
         .warnabg-gray{
             background-color: #F8F9FA;
         }
+        .top-borderless{
+            border-top: 0px !important;
+        }
+        .padr-0{
+            padding-right: 0px !important;
+        }
+        .padl-2{
+            padding-left: 2px !important;
+        }
+        .padtopbot{
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
     </style>
 
     <div class="content-header">
@@ -30,105 +43,73 @@
 
                     <div class="card card-info">
                         <div class="card-body">
-                            <form class="form-horizontal" id="formulir" name="formulir" method="post" enctype="multipart/form-data">
-                                @csrf
-                                <div class="card-body">
-                                    <div class="form-group row">
-                                        <label for="judulkegiatan" class="col-sm-3 col-form-label">Judul kegiatan</label>
-                                        <div class="col-sm-9">
-                                            <input type="hidden" class="form-control" id="kodekegiatan" name="kodekegiatan" value="{{ $kodekegiatan }}">
-                                            <input type="input" class="form-control" id="judulkegiatan" name="judulkegiatan" value="{{ $kegiatan->nama_kegiatan }}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="mataanggaran" class="col-sm-3 col-form-label">Mata Anggaran</label>
-                                        <div class="col-sm-9">
-                                            <select class="form-control select2bs4" id="mataanggaran" name="mataanggaran" style="width: 100%;">
-                                                @foreach ($mataanggaran as $mak)
-                                                  @if ($mak->id_mak == $kegiatan->id_mak)
-                                                  <option value="{{ $mak->id_mak }}" selected>{{ $mak->namakegiatan }}</option>
-                                                  @else
-                                                  <option value="{{ $mak->id_mak }}">{{ $mak->namakegiatan }}</option>
-                                                  @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="tanggal" class="col-sm-3 col-form-label">Tanggal</label>
-                                        <div class="col-sm-9">
-                                            <div class="input-group date" id="tanggal" data-target-input="nearest" style="width: 150px;">
-                                                <input type="text" value="{{ Gudangfungsi::tanggalformulir($kegiatan->tanggal) }}" name="tanggal" class="form-control datetimepicker-input" data-target="#tanggal"/>
-                                                <div class="input-group-append" data-target="#tanggal" data-toggle="datetimepicker">
-                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="tempat" class="col-sm-3 col-form-label">Tempat pelaksanaan</label>
-                                        <div class="col-sm-9">
-                                            <input type="input" class="form-control" value="{{ $kegiatan->tempat }}" id="tempat" name="tempat" style="width: 450px;">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label for="file_undangan" class="col-sm-3 col-form-label">Upload undangan</label>
-                                        <div class="col-sm-9">
-                                            <input type="file" class="form-control" id="file_undangan" name="file_undangan" style="width: 250px;">
-                                            <input type="hidden" class="form-control" value="{{ $kegiatan->file_undangan }}" id="file_undangancurrent" name="file_undangancurrent" style="width: 250px;">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                      <label for="jumlahdibayar" class="col-sm-3 col-form-label"></label>
-                                      <div class="col-sm-9">
-                                        @if ($kegiatan->file_undangan != '')
-                                          <a href="#" target="_blank">
-                                            <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_undangan }}
-                                          </a>
-                                        @else
-                                          <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;No file available
-                                        @endif
-                                      </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label for="file_undangan" class="col-sm-3 col-form-label">Upload laporan</label>
-                                        <div class="col-sm-9">
-                                            <input type="file" class="form-control" id="file_laporankegiatan" name="file_laporankegiatan" style="width: 250px;">
-                                            <input type="hidden" class="form-control" value="{{ $kegiatan->file_laporankegiatan }}" id="file_laporankegiatancurrent" name="file_laporankegiatancurrent" style="width: 250px;">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                      <label for="jumlahdibayar" class="col-sm-3 col-form-label"></label>
-                                      <div class="col-sm-9">
-                                        @if ($kegiatan->file_laporankegiatan != '')
-                                          <a href="#" target="_blank">
-                                            <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_laporankegiatan }}
-                                          </a>
-                                        @else
-                                          <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;No file available
-                                        @endif
-                                      </div>
-                                    </div>
-                                    <div>
-                                        <button type="submit" class="btn btn-success float-right">
-                                            <i class="nav-icon fas fa-save"></i>&nbsp;&nbsp;SIMPAN
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
+                            @csrf
+                            <div class="card-body">
+                                <input type="hidden" id="kodekegiatan" name="kodekegiatan" value="{{ $kegiatan->kode_kegiatan }}">
+                                <h3>Kegiatan: {{ $kegiatan->nama_kegiatan }}</h3>
+                                <hr>
+                                <table id="tabeldata2" class="table table-bordered_ table-hover_ table-striped_" width="100%px" style="margin-left:-12px !important;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: 20%px;" class="top-borderless padtopbot"><strong>Mata anggaran</strong></td>
+                                            <td style="width: 2%;" class="top-borderless padr-0 padtopbot">:</td>
+                                            <td style="width: 78%;" class="top-borderless padl-2 padtopbot">{{ $kegiatan->namakegiatan }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="top-borderless padtopbot"><strong>MAK</strong></td>
+                                            <td class="top-borderless padr-0 padtopbot">:</td>
+                                            <td class="top-borderless padl-2 padtopbot">{{ $kegiatan->kodemak }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="top-borderless padtopbot"><strong>Tanggal pelaksanaan</strong></td>
+                                            <td class="top-borderless padr-0 padtopbot">:</td>
+                                            <td class="top-borderless padl-2 padtopbot">{{ Gudangfungsi::tanggalindo($kegiatan->tanggal) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="top-borderless padtopbot"><strong>Tempat</strong></td>
+                                            <td class="top-borderless padr-0 padtopbot">:</td>
+                                            <td class="top-borderless padl-2 padtopbot">{{ $kegiatan->tempat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="top-borderless padtopbot"><strong>File undangan</strong></td>
+                                            <td  class="top-borderless padr-0 padtopbot">:</td>
+                                            <td class="top-borderless padl-2 padtopbot">
+                                            @if ($kegiatan->file_undangan != '')
+                                                <a href="#" target="_blank">
+                                                <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_undangan }}
+                                                </a>
+                                            @else
+                                                <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;No file available
+                                            @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="top-borderless padtopbot"><strong>File Laporan</strong></td>
+                                            <td class="top-borderless padr-0 padtopbot">:</td>
+                                            <td class="top-borderless padl-2 padtopbot">
+                                                @if ($kegiatan->file_laporankegiatan != '')
+                                                    <a href="#" target="_blank">
+                                                    <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_laporankegiatan }}
+                                                    </a>
+                                                @else
+                                                    <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;No file available
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
                             <hr>
                             <div class="row form-group">
                                 <h5 style="font-weight: bold;margin-left:10px;">Daftar Narasumber</h5>
-                                &nbsp;&nbsp;
+                                {{-- &nbsp;&nbsp;
                                 <button id="btnTambahNarsum" class="btn btn-xs btn-success" title="Tambah narasumber" style="padding-left: 10px;padding-right:10px;" data-toggle="modal" data-target="#modalku" onclick="showAddFormNarsum()">
                                     <i class="nav-icon fas fa-plus"></i>
                                 </button>
                                 <button id="btnMuatUlang" class="btn btn-xs btn-primary" title="Muat ulang data narasumber" style="padding-left: 10px;padding-right:10px;margin-left:5px;" onclick="reloadTable()">
                                     <i class="nav-icon fas fa-sync"></i>
-                                </button>
+                                </button> --}}
                             </div>
 
                             <table id="tabeldata" class="table table-bordered table-hover_ table-striped__" width="100%px">
@@ -149,12 +130,9 @@
                                 <tbody></tbody>
                               </table>
                         </div>
-                        <div class="modal-footer justify-content-between__">
-                          <a href="{{ url('kegiatan/cetakkwitansi?id='.$kegiatan->id_kegiatan) }}" type="button" class="btn btn-danger">
-                            <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Kwitansi
-                          </a>
-                          <button type="button" class="btn btn-default">Keluar</button>
-                      </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+                        </div>
                     </div>
 
                 </div>
@@ -182,7 +160,7 @@
     }
 
     function showEditFormNarsum(id_kegiatandetail){
-        $('#modalku').modal('show').find('#modalku_content').load("{{ url('/kegiatan/narsumedit') }}?id="+id_kegiatandetail);
+        $('#modalku').modal('show').find('#modalku_content').load("{{ url('/kegiatan/verifikasidetail') }}?id="+id_kegiatandetail);
     }
 
     function reloadTable(){
@@ -323,7 +301,7 @@
             ],
             columnDefs: [
                 { className: "ratakanan", "targets": [3,4,5,6,7]},
-                { className: "ratatengah", "targets": [2,8]},
+                { className: "ratatengah", "targets": [2,8,9]},
                 // { className: "ndrparagraf", "targets": "_all"},
             ],
             "dom": 'rtip',

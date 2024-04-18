@@ -36,6 +36,11 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('/kegiatan/narsumsaveupdate', [KegiatanController::class, 'narsumsaveupdate']);
     Route::post('/kegiatan/narsumdelete', [KegiatanController::class, 'narsumdelete']);
     Route::post('/kegiatan/getnarsum', [KegiatanController::class, 'getnarsum']);
+    Route::get('/kegiatan/verifikasi', [KegiatanController::class, 'verifikasi']);
+    Route::get('/kegiatan/verifikasilihat/{kodekegiatan}', [KegiatanController::class, 'verifikasilihat']);
+    Route::get('/kegiatan/verifikasidetail', [KegiatanController::class, 'verifikasidetail']);
+    Route::get('/kegiatan/lihatbuktitransfer', [KegiatanController::class, 'lihatbuktitransfer']);
+    Route::post('/kegiatan/verifikasibayar_save', [KegiatanController::class, 'verifikasibayar_save']);
 
     Route::get('/narasumber', [NarasumberController::class, 'index']);
     Route::get('/narasumber/getlist', [NarasumberController::class, 'getlist']);

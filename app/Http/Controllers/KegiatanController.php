@@ -18,8 +18,7 @@ use Illuminate\Support\Facades\File;
 class KegiatanController extends Controller
 {
     public function index(){
-        $data['kegiatan'] = DB::table('kegiatan')->orderBy('created_at', 'asc');
-        $data['kegiatandetail'] = DB::table('kegiatan_detail')->orderBy('created_at', 'desc');
+        $data['kegiatan'] = DB::table('kegiatan')->orderBy('created_at', 'desc');
 
         return view('kegiatan.index', $data);
     }
@@ -48,7 +47,7 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafile = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads", "{$namafile}");
+            $file->move("public/uploads/kegiatan", "{$namafile}");
         }else{
             $namafile = '';
         }
@@ -104,7 +103,7 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafile = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads", "{$namafile}");
+            $file->move("public/uploads/kegiatan", "{$namafile}");
         }else{
             $namafile = $req->post('file_undangancurrent');
         }
@@ -121,8 +120,8 @@ class KegiatanController extends Controller
             $simpan = DB::table('kegiatan')->where('kode_kegiatan', $kodekegiatan)->update($data);
             $datakegiatan = DB::table('kegiatan')->where('kode_kegiatan', $kodekegiatan)->first();
             $file_undangan = $datakegiatan->file_undangan;
-            if (File::exists("public/uploads/".$file_undangan) == true){
-                File::delete("public/uploads/".$file_undangan);
+            if (File::exists("public/uploads/kegiatan/".$file_undangan) == true){
+                File::delete("public/uploads/kegiatan/".$file_undangan);
             }
 
             if ($simpan){
@@ -154,7 +153,7 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafile_undangan = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads", "{$namafile_undangan}");
+            $file->move("public/uploads/kegiatan", "{$namafile_undangan}");
         }else{
             $namafile_undangan = $req->post('file_undangancurrent');
         }
@@ -166,7 +165,7 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafile_laporan = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads", "{$namafile_laporan}");
+            $file->move("public/uploads/kegiatan", "{$namafile_laporan}");
         }else{
             $namafile_laporan = $req->post('file_laporankegiatancurrent');
         }
@@ -183,11 +182,11 @@ class KegiatanController extends Controller
         try{
             $datakegiatan = DB::table('kegiatan')->where('kode_kegiatan', $kodekegiatan)->first();
             $file_undangan = $datakegiatan->file_undangan;
-            if (File::exists("public/uploads/".$file_undangan) == true){
-                File::delete("public/uploads/".$file_undangan);
+            if (File::exists("public/uploads/kegiatan/".$file_undangan) == true){
+                File::delete("public/uploads/kegiatan/".$file_undangan);
             }
-            if (File::exists("public/uploads/".$datakegiatan->file_laporankegiatan) == true){
-                File::delete("public/uploads/".$datakegiatan->file_laporankegiatan);
+            if (File::exists("public/uploads/kegiatan/".$datakegiatan->file_laporankegiatan) == true){
+                File::delete("public/uploads/kegiatan/".$datakegiatan->file_laporankegiatan);
             }
             
             $simpan = DB::table('kegiatan')->where('kode_kegiatan', $kodekegiatan)->update($data);
@@ -282,12 +281,18 @@ class KegiatanController extends Controller
                 return '<span class="right badge badge-'.$warnatransfer.'">Transfer</span>&nbsp;<span class="right badge badge-'.$warnaverifikasi.'">Verified</span>';
             })
             ->addColumn('action', function($row){
-                $actionBtn = '<button type="button" onclick="showEditFormNarsum(\''.$row->id_kegiatandetail.'\')" title="Edit" class="btn btn-xs btn-success m-b-0 ">
+                if (Session::get('sesLevel') == 'administrator' || Session::get('sesLevel') == 'operator'){
+                    $actionBtn = '<button type="button" onclick="showEditFormNarsum(\''.$row->id_kegiatandetail.'\')" title="Edit" class="btn btn-xs btn-success m-b-0 ">
                                 <i class="nav-icon fas fa-edit"></i>
                             </button>
                             <button type="button" onclick="hapus(\''.$row->id_kegiatandetail.'\')" title="Hapus" class="btn btn-xs btn-secondary m-b-0">
                                 <i class="nav-icon fas fa-trash"></i>
                             </button>';
+                }else{
+                    $actionBtn = '<button type="button" onclick="showEditFormNarsum(\''.$row->id_kegiatandetail.'\')" title="Edit" class="btn btn-xs btn-success m-b-0 ">
+                                <i class="nav-icon fas fa-edit"></i>
+                            </button>';
+                }
                 return $actionBtn;
             })
             ->rawColumns(['namalengkap', 'jumlah_jam', 'honor_satujam', 'jumlahhonor', 'potongan_pph', 'jumlah_bayar', 'status', 'action'])
@@ -304,7 +309,7 @@ class KegiatanController extends Controller
         $jumlahhonor = Gudangfungsi::normalNumber($req->post('jumlahhonor'));
         $pph = $req->post('pph');
         $jumlahpotongan = Gudangfungsi::normalNumber($req->post('jumlahpotongan'));
-        $jumlahbayar =Gudangfungsi::normalNumber($req->post('jumlahbayar'));
+        $jumlahbayar = Gudangfungsi::normalNumber($req->post('jumlahbayar'));
         $perjadin = ($req->post('perjadin') == '' ? 'no' : $req->post('perjadin'));
         $nominalperjadin = $req->post('nominalperjadin');
 
@@ -315,7 +320,7 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafileSurattugas = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads", "{$namafileSurattugas}");
+            $file->move("public/uploads/kegiatan", "{$namafileSurattugas}");
         }else{
             $namafileSurattugas = '';
         }
@@ -327,7 +332,7 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafileKwitansiperjadin = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads", "{$namafileKwitansiperjadin}");
+            $file->move("public/uploads/kegiatan", "{$namafileKwitansiperjadin}");
         }else{
             $namafileKwitansiperjadin = '';
         }
@@ -404,7 +409,7 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafileSurattugas = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads", "{$namafileSurattugas}");
+            $file->move("public/uploads/kegiatan", "{$namafileSurattugas}");
         }else{
             $namafileSurattugas = $req->post('surattugas_current');
         }
@@ -416,19 +421,27 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafileKwitansiperjadin = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads", "{$namafileKwitansiperjadin}");
+            $file->move("public/uploads/kegiatan", "{$namafileKwitansiperjadin}");
         }else{
             $namafileKwitansiperjadin = $req->post('kwitansiperjadin_current');
         }
 
         if ($req->hasFile('buktitransfer')){
+            $allowedfileExtension=['png','jpg','jpeg','gif'];
             $file = $req->file('buktitransfer');
             $namafileFull = $file->getClientOriginalName();
             $namafileOri = pathinfo($namafileFull, PATHINFO_FILENAME);
             $ekstensi = $file->getClientOriginalExtension();
             $namafile_buktitransfer = $namafileOri.'_'.time().'.'.$ekstensi;
-
-            $file->move("public/uploads", "{$namafile_buktitransfer}");
+            $check=in_array($ekstensi, $allowedfileExtension);
+            
+            if ($check){
+                $file->move("public/uploads/kegiatan", "{$namafile_buktitransfer}");
+            }else{
+                $response = ['result'=>'failed', 'message'=>'Tipe file harus image (png/jpg/jpeg/gif)'];
+                return response()->json($response);
+                exit();
+            }
         }else{
             $namafile_buktitransfer = $req->post('buktitransfer_current');
         }
@@ -476,14 +489,14 @@ class KegiatanController extends Controller
             $file_kwitansi = $data->first()->file_kwitansi;
             $file_transfer = $data->first()->file_transfer;
 
-            if (File::exists("public/uploads/".$file_surattugas) == true){
-                File::delete("public/uploads/".$file_surattugas);
+            if (File::exists("public/uploads/kegiatan/".$file_surattugas) == true){
+                File::delete("public/uploads/kegiatan/".$file_surattugas);
             }
-            if (File::exists("public/uploads/".$file_kwitansi) == true){
-                File::delete("public/uploads/".$file_kwitansi);
+            if (File::exists("public/uploads/kegiatan/".$file_kwitansi) == true){
+                File::delete("public/uploads/kegiatan/".$file_kwitansi);
             }
-            if (File::exists("public/uploads/".$file_transfer) == true){
-                File::delete("public/uploads/".$file_transfer);
+            if (File::exists("public/uploads/kegiatan/".$file_transfer) == true){
+                File::delete("public/uploads/kegiatan/".$file_transfer);
             }
         }
 
@@ -494,6 +507,72 @@ class KegiatanController extends Controller
             $response = ['result'=>'failed', 'message'=>'Deleteting data failed'];
         }
 
+        return response()->json($response);
+    }
+
+    public function verifikasi(){
+        $data['kegiatan'] = DB::table('kegiatan')->orderBy('created_at', 'desc');
+
+        return view('kegiatan.verifikasi', $data);
+    }
+
+    public function verifikasilihat($kodekegiatan){
+        $data['judulhalaman'] = 'Verifikasi Kegiatan';
+        $data['kodekegiatan'] = $kodekegiatan;
+        $data['kegiatan'] = DB::table('kegiatan as keg')
+                            ->join('mak as ma', 'keg.id_mak', '=', 'ma.id_mak')
+                            ->where('keg.kode_kegiatan', $kodekegiatan)->first();
+
+        return view('kegiatan.verifikasilihat', $data);
+    }
+
+    public function verifikasidetail(Request $req){
+        $id_kegiatandetail = $req->get('id');
+
+        $data['judulhalaman'] = 'Rincian Detail Narasumber';
+        $data['kegdetail'] = DB::table('kegiatan_detail as kd')
+                            ->join('narasumber as nr', 'kd.id_narasumber', '=', 'nr.id_narasumber')
+                            ->join('golongan as gol', 'nr.id_golongan', '=', 'gol.id_golongan')
+                            ->join('eselon as es', 'nr.id_eselon', '=', 'es.id_eselon')
+                            ->where('kd.id_kegiatandetail', $id_kegiatandetail)
+                            ->orderBy('kd.created_at', 'desc')->first();
+
+        return view('kegiatan.verifikasidetail', $data);
+    }
+
+    public function lihatbuktitransfer(Request $req){
+        $kegdetail = DB::table('kegiatan_detail')->where('id_kegiatandetail', $req->get('id'))->first();
+
+        $data['file_transfer'] = $kegdetail->file_transfer;
+        return view('kegiatan.lihatbuktitransfer', $data);
+    }
+
+    public function verifikasibayar_save(Request $req){
+        $id_kegiatandetail = $req->post('id_kegiatandetail');
+        $is_verified = $req->post('is_verified');
+        $verified_comment = $req->post('verified_comment');
+        
+
+        $data = ['is_verified' => $is_verified,
+                 'verified_comment' => $verified_comment,
+                 'updated_at' => date('Y-m-d H:i:s'),
+                ];
+
+        try{
+            $simpan = DB::table('kegiatan_detail')->where('id_kegiatandetail', $id_kegiatandetail)->update($data);
+
+            if ($simpan){
+                $response = ['result'=>'success', 'message'=>'Update data successfully'];
+            }else{
+                $response = ['result'=>'failed', 'message'=>'Update data failed'];
+            }
+        }catch(\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if ($errorCode == 1062){
+                $response = ['result'=>'failed', 'message'=>'Duplicate key found.']; 
+            }
+        }
+        
         return response()->json($response);
     }
 

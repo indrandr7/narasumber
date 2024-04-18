@@ -182,7 +182,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+          </div>
           <div class="form-group row">
             <label for="jumlahdibayar" class="col-sm-3 col-form-label">Nomor SPM</label>
             <div class="col-sm-6">
@@ -195,6 +195,9 @@
                 <input type="file" class="form-control" id="buktitransfer" name="buktitransfer">
                 <input type="hidden" class="form-control" id="buktitransfer_current" name="buktitransfer_current" value="{{ $kegdetail->file_transfer }}">
             </div>
+            <div class="col-sm-5 mt-2">
+              Tipe file gambar (png/jpg/jpeg/gif)
+            </div>
           </div>
           <div class="form-group row">
             <label for="jumlahdibayar" class="col-sm-3 col-form-label"></label>
@@ -206,6 +209,12 @@
               @else
                 <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;No file available
               @endif
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="jumlahdibayar" class="col-sm-3 col-form-label">Komentar Verifikasi</label>
+            <div class="col-sm-9">
+              <textarea disabled class="form form-control">{{ $kegdetail->verified_comment }}</textarea>
             </div>
           </div>
         </div>

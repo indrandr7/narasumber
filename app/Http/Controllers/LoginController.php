@@ -32,7 +32,11 @@ class LoginController extends Controller
             Session::put('sesName', $pengguna->name);
             Session::put('sesLevel', $pengguna->level);
 
-            return redirect()->intended('kegiatan');
+            if ($pengguna->level == 'administrator' || $pengguna->level == 'operator'){
+                return redirect()->intended('kegiatan');
+            }else{
+                return redirect()->intended('kegiatan/verifikasi');
+            }
         }else{
             return redirect()->back()->withErrors(['message' => 'Username/password mismatch!']);
         }
