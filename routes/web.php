@@ -84,5 +84,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/pengguna/edit', [PenggunaController::class, 'edit']);
     Route::post('/pengguna/saveupdate', [PenggunaController::class, 'saveupdate']);
     Route::post('/pengguna/delete', [PenggunaController::class, 'delete']);
+    Route::get('/pengguna/gantipassword', [PenggunaController::class, 'gantipassword']);
+    Route::post('/pengguna/passwordupdate', [PenggunaController::class, 'passwordupdate']);
 
 });

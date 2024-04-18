@@ -27,6 +27,7 @@ class LoginController extends Controller
             $pengguna = DB::table('users as us')
                         ->join('users_level as lv', 'us.id_user_level', '=', 'lv.id_user_level')
                         ->where('us.username', $req->username)->first();
+            Session::put('sesUserID', $pengguna->id);
             Session::put('sesUsername', $pengguna->username);
             Session::put('sesName', $pengguna->name);
             Session::put('sesLevel', $pengguna->level);

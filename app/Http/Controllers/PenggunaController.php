@@ -9,6 +9,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class PenggunaController extends Controller
 {
@@ -176,6 +178,43 @@ class PenggunaController extends Controller
             $response = ['result'=>'success', 'message'=>'Deleting data successfully'];
         }else{
             $response = ['result'=>'failed', 'message'=>'Deleteting data failed'];
+        }
+
+        return response()->json($response);
+    }
+
+    public function gantipassword(Request $req){
+        $data['judulhalaman'] = 'Ganti Password Saya';
+        return view('pengguna.gantipassword', $data);
+
+        // echo "password: ".Hash::make('admin123');
+    }
+
+    public function passwordupdate(Request $req){
+        // $id = Session::get('sesUserID');
+        $id_pengguna = $req->post('id_user');
+        $password_sekarang = $req->post('password_sekarang');
+        $password = Hash::make($req->post('password_baru'));
+        
+        try{
+            $data = ['password' => $password];
+
+            if (Hash::check($password_sekarang, Auth::user()->password)){
+                $simpan = DB::table('users')->where('id', $id_pengguna)->update($data);
+
+                if ($simpan){
+                    $response = ['result'=>'success', 'message'=>'Save successfully'];
+                }else{
+                    $response = ['result'=>'failed', 'message'=>'Save failed'];
+                }
+            }else{
+                $response = ['result'=>'failed', 'message'=>'Your current password is not match'];
+            }
+        }catch(\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if ($errorCode == 1062){
+                $response = ['result'=>'failed', 'message'=>'Duplicate key found.']; 
+            }
         }
 
         return response()->json($response);
