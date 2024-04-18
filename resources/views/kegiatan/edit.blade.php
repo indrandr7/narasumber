@@ -150,7 +150,7 @@
                               </table>
                         </div>
                         <div class="modal-footer justify-content-between__">
-                          <a href="{{ url('kegiatan/cetakkwitansi?id='.$kegiatan->id_kegiatan) }}" type="button" class="btn btn-danger">
+                          <a href="{{ url('kegiatan/cetakkwitansi?id='.$kegiatan->id_kegiatan) }}" type="button" class="btn btn-outline-danger">
                             <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Kwitansi
                           </a>
                           <button type="button" class="btn btn-default">Keluar</button>

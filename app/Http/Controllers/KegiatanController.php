@@ -14,6 +14,8 @@ use App\Helpers\Gudangfungsi;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Barryvdh\DomPDF\Facade\PDF;
+use Riskihajar\Terbilang\Facades\Terbilang;
 
 class KegiatanController extends Controller
 {
@@ -574,6 +576,27 @@ class KegiatanController extends Controller
         }
         
         return response()->json($response);
+    }
+
+    public function cetakkwitansi(Request $req){
+        $id_kegiatan = $req->get('id');
+
+        $data['judulhalaman'] = 'Kwitansi Honor Narsum';
+        $data['kegiatan'] = DB::table('kegiatan as keg')
+                            ->join('mak as ma', 'keg.id_mak', '=', 'ma.id_mak')
+                            ->where('keg.id_kegiatan', $id_kegiatan)->first();
+        $data['kegdetail'] = DB::table('kegiatan_detail as det')
+                             ->join('narasumber as nar', 'det.id_narasumber', '=', 'nar.id_narasumber')
+                             ->where('det.kode_kegiatan', $data['kegiatan']->kode_kegiatan)->get();
+        $data['sumnominal'] = DB::table('kegiatan_detail')
+                                 ->select(DB::raw('SUM(jumlahhonor) AS jumlah_honor, SUM(potongan_pph) AS jumlah_potongan, SUM(jumlah_bayar) AS jumlah_dibayar'))
+                                 ->where('kode_kegiatan', $data['kegiatan']->kode_kegiatan)->first();
+        $data['ppk'] = DB::table('ppk')->where('tahun', date('Y'))->first();
+        $data['bendahara'] = DB::table('bendahara')->where('tahun', date('Y'))->first();
+
+        $pdf = PDF::loadView('kegiatan/cetakkwitansi', $data)->setPaper('a4', 'landscape');
+
+        return $pdf->stream('kwitansi-narsum.pdf');
     }
 
 }

@@ -1,0 +1,6 @@
+Fungsi terbilang
+https://hapiz.medium.com/laravel-terbilang-b2c089848312
+https://github.com/riskihajar/terbilang
+
+DomPDF
+https://www.ayongoding.com/membuat-laporan-pdf-laravel-dompdf/
