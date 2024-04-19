@@ -602,6 +602,27 @@ class KegiatanController extends Controller
         return $pdf->stream('kwitansi-narsum.pdf');
     }
 
+    public function cetakusulan(Request $req){
+        $id_kegiatan = $req->get('id');
+
+        $data['judulhalaman'] = 'Usulan Narasumber';
+        $data['kegiatan'] = DB::table('kegiatan as keg')
+                            ->join('mak as ma', 'keg.id_mak', '=', 'ma.id_mak')
+                            ->where('keg.id_kegiatan', $id_kegiatan)->first();
+        $data['kegdetail'] = DB::table('kegiatan_detail as det')
+                             ->join('narasumber as nar', 'det.id_narasumber', '=', 'nar.id_narasumber')
+                             ->where('det.kode_kegiatan', $data['kegiatan']->kode_kegiatan)->get();
+        $data['sumnominal'] = DB::table('kegiatan_detail')
+                                 ->select(DB::raw('SUM(jumlahhonor) AS jumlah_honor, SUM(potongan_pph) AS jumlah_potongan, SUM(jumlah_bayar) AS jumlah_dibayar'))
+                                 ->where('kode_kegiatan', $data['kegiatan']->kode_kegiatan)->first();
+        $data['ppk'] = DB::table('ppk')->where('tahun', date('Y'))->first();
+        $data['bendahara'] = DB::table('bendahara')->where('tahun', date('Y'))->first();
+
+        $pdf = PDF::loadView('kegiatan/cetakusulan', $data)->setPaper('a4');
+
+        return $pdf->stream('usulan-narsum.pdf');
+    }
+
     public function cari(Request $req){
         $strtanggal = (string)$req->post('tanggal');
         $tanggal = explode(' - ', $strtanggal);
