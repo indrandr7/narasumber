@@ -267,6 +267,9 @@ class KegiatanController extends Controller
             ->addColumn('jumlah_bayar', function($row){
                 return Gudangfungsi::formatrupiah($row->jumlah_bayar);
             })
+            ->addColumn('sppd', function($row){
+                return Gudangfungsi::formatrupiah($row->nominal_sppd);
+            })
             ->addColumn('status', function($row){
                 if ($row->is_transfer == 'yes'){
                     $warnatransfer = 'success';
@@ -297,7 +300,7 @@ class KegiatanController extends Controller
                 }
                 return $actionBtn;
             })
-            ->rawColumns(['namalengkap', 'jumlah_jam', 'honor_satujam', 'jumlahhonor', 'potongan_pph', 'jumlah_bayar', 'status', 'action'])
+            ->rawColumns(['namalengkap', 'jumlah_jam', 'honor_satujam', 'jumlahhonor', 'potongan_pph', 'jumlah_bayar', 'sppd', 'status', 'action'])
             ->make(true);
         
         return $datatable;
@@ -598,5 +601,68 @@ class KegiatanController extends Controller
 
         return $pdf->stream('kwitansi-narsum.pdf');
     }
+
+    public function cari(Request $req){
+        $strtanggal = (string)$req->post('tanggal');
+        $tanggal = explode(' - ', $strtanggal);
+        $tanggal_awal = Gudangfungsi::formtomysql($tanggal[0]);
+        $tanggal_akhir = Gudangfungsi::formtomysql($tanggal[1]);
+
+        $data['judulhalaman'] = 'Hasil pencarian';
+        $data['tanggal_awal'] = $tanggal_awal;
+        $data['tanggal_akhir'] = $tanggal_akhir;
+        $data['kegiatan'] = DB::table('kegiatan')
+                    ->where('tanggal', '>=', $tanggal_awal)
+                    ->where('tanggal', '<=', $tanggal_akhir)
+                    ->orderBy('created_at', 'desc');
+        
+        return view('kegiatan.cari', $data);
+    }
+
+    public function cetakmatrik(){
+        $tahun_sekarang = date('Y');
+
+        $data['judulhalaman'] = 'Matrik Narasumber '.$tahun_sekarang;
+        $data['tahun'] = $tahun_sekarang;
+        $data['kegiatan'] = DB::table('kegiatan')
+                            ->where(DB::raw('YEAR(tanggal)'), '=', $tahun_sekarang)
+                            ->orderBy('created_at', 'asc');
+
+        $pdf = PDF::loadView('kegiatan/cetakmatrik', $data)->setPaper('a4', 'landscape');
+
+        return $pdf->stream('matrik-narsum-'.$tahun_sekarang.'.pdf');
+    }
+
+    public function cetakmatriks(Request $req){
+        $tanggal_awal = $req->get('aw');
+        $tanggal_akhir = $req->get('ak');
+
+        $data['judulhalaman'] = 'Matrik Narasumber';
+        $data['tanggal'] = Gudangfungsi::tanggalindorange($tanggal_awal, $tanggal_akhir);
+
+        $data['kegiatan'] = DB::table('kegiatan')
+                            ->where('tanggal', '>=', $tanggal_awal)
+                            ->where('tanggal', '<=', $tanggal_akhir)
+                            ->orderBy('created_at', 'asc');
+
+        $pdf = PDF::loadView('kegiatan/cetakmatriks', $data)->setPaper('a4', 'landscape');
+
+        return $pdf->stream('matriks-narsum.pdf');
+    }
+
+    // public function hasilcari(Request $req){
+    //     $strtanggal = (string)$req->post('tanggal');
+    //     $tanggal = explode(' - ', $strtanggal);
+    //     $tanggal_mulai = Gudangfungsi::formtomysql($tanggal[0]);
+    //     $tanggal_akhir = Gudangfungsi::formtomysql($tanggal[1]);
+
+    //     $data['judulhalaman'] = 'Hasil pencarian';
+    //     $data['kegiatan'] = DB::table('kegiatan')
+    //                 ->where('tanggal', '>=', $tanggal_mulai)
+    //                 ->where('tanggal', '<=', $tanggal_akhir)
+    //                 ->orderBy('created_at', 'desc');
+        
+    //     return view('kegiatan.cari', $data);
+    // }
 
 }

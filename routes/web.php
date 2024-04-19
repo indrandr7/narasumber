@@ -42,6 +42,9 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/kegiatan/lihatbuktitransfer', [KegiatanController::class, 'lihatbuktitransfer']);
     Route::post('/kegiatan/verifikasibayar_save', [KegiatanController::class, 'verifikasibayar_save']);
     Route::get('/kegiatan/cetakkwitansi', [KegiatanController::class, 'cetakkwitansi']);
+    Route::post('/kegiatan/cari', [KegiatanController::class, 'cari']);
+    Route::get('/kegiatan/cetakmatrik', [KegiatanController::class, 'cetakmatrik']);
+    Route::get('/kegiatan/cetakmatriks', [KegiatanController::class, 'cetakmatriks']);
 
     Route::get('/narasumber', [NarasumberController::class, 'index']);
     Route::get('/narasumber/getlist', [NarasumberController::class, 'getlist']);

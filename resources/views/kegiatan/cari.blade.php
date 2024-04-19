@@ -1,6 +1,5 @@
 @extends('layout.app')
 @section('content')
-
 <style>
   .ratatengah{
     text-align: center;
@@ -18,12 +17,12 @@
             <nav class="navbar navbar-light__ bg-light__ justify-content-between">
                 <ol class="breadcrumb float-sm-left">
                   <li class="breadcrumb-item"><a href="">Home</a></li>
-                  <li class="breadcrumb-item active">Dashboard</li>
+                  <li class="breadcrumb-item active">Dashboard [INI HALAMAN CARI.PHP]</li>
                 </ol>
               </nav>
         </div>
         <div class="col-7 float-right">
-          <form class="form-inline float-right" id="formulir" name="formulir" action="{{ url('kegiatan/cari/') }}" method="post" enctype="multipart/form-data">
+          <form class="form-inline float-right" id="formulir" name="formulir" action="{{ url('kegiatan/cari') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="form-group row">
               <label for="tanggal" class="col-sm-3 col-form-label">Tanggal</label>
@@ -44,7 +43,7 @@
               </button>
             </div>
             <div class="form-group row" style="margin-right: 10px;">
-              <a href="{{ url('kegiatan/cetakmatrik') }}" target="_blank" class="btn btn-sidebar btn-outline-danger">
+              <a href="{{ url('kegiatan/cetakmatriks?aw='.$tanggal_awal.'&ak='.$tanggal_akhir) }}" target="_blank" class="btn btn-sidebar btn-outline-danger">
                 <i class="fas fa-file-pdf"></i> Cetak Matrik
               </a>
             </div>
@@ -96,32 +95,32 @@
                             @if ($narsum->count() == 0)
                               Narasumber not available
                             @else
-                              <table width="100%">
+                            <table width="100%">
+                              <tr>
+                                <td style="text-align:center;border:0px;" colspan="2"></td>
+                                <td style="text-align:center;background-color:#cdcdcd;">Honor (Rp)</td>
+                                <td style="text-align:center;background-color:#cdcdcd;">SPPD (Rp)</td>
+                                <td style="text-align:center;background-color:#cdcdcd;" colspan="2">Status</td>
+                              </tr>
+                              @foreach ($narsum->get() as $key => $dtnarsum)
+                                @php
+                                    $warnaTransfer = ($dtnarsum->is_transfer == 'yes' ? 'btn-success' : 'btn-danger');
+                                    $warnaVerifikasi = ($dtnarsum->is_verified == 'yes' ? 'btn-success' : 'btn-danger');
+                                @endphp
                                 <tr>
-                                  <td style="text-align:center;border:0px;" colspan="2"></td>
-                                  <td style="text-align:center;background-color:#cdcdcd;">Honor (Rp)</td>
-                                  <td style="text-align:center;background-color:#cdcdcd;">SPPD (Rp)</td>
-                                  <td style="text-align:center;background-color:#cdcdcd;" colspan="2">Status</td>
+                                  <td style="padding: 4px;width:5%;border:1px solid #cdcdcd;">{{ $key+1 }}.</td>
+                                  <td style="padding: 4px;width:30%;border:1px solid #cdcdcd;">{{ $dtnarsum->namalengkap }}</td>
+                                  <td style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->jumlahhonor) }}</td>
+                                  <td style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->nominal_sppd) }}</td>
+                                  <td style="padding: 4px 1px 4px 1px;width:10%;text-align:center;border:1px solid #cdcdcd;border-right:0px !important;">
+                                    <button class="btn btn-xs {{ $warnaTransfer }}" id="statusTransfer" onclick="statusTransfer('{{$dtnarsum->id_kegiatandetail}}')">Transfer</button>
+                                  </td>
+                                  <td style="padding: 4px 1px 4px 1px;padding: 4px;width:10%;text-align:center;border:1px solid #cdcdcd;border-left:0px !important;">
+                                    <button class="btn btn-xs {{ $warnaVerifikasi }}" id="statusVerifikasi" onclick="statusVerifikasi('{{$dtnarsum->id_kegiatandetail}}')">Verifikasi</button>
+                                  </td>
                                 </tr>
-                                @foreach ($narsum->get() as $key => $dtnarsum)
-                                  @php
-                                      $warnaTransfer = ($dtnarsum->is_transfer == 'yes' ? 'btn-success' : 'btn-danger');
-                                      $warnaVerifikasi = ($dtnarsum->is_verified == 'yes' ? 'btn-success' : 'btn-danger');
-                                  @endphp
-                                  <tr>
-                                    <td style="padding: 4px;width:5%;border:1px solid #cdcdcd;">{{ $key+1 }}.</td>
-                                    <td style="padding: 4px;width:30%;border:1px solid #cdcdcd;">{{ $dtnarsum->namalengkap }}</td>
-                                    <td style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->jumlahhonor) }}</td>
-                                    <td style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->nominal_sppd) }}</td>
-                                    <td style="padding: 4px 1px 4px 1px;width:10%;text-align:center;border:1px solid #cdcdcd;border-right:0px !important;">
-                                      <button class="btn btn-xs {{ $warnaTransfer }}" id="statusTransfer" onclick="statusTransfer('{{$dtnarsum->id_kegiatandetail}}')">Transfer</button>
-                                    </td>
-                                    <td style="padding: 4px 1px 4px 1px;padding: 4px;width:10%;text-align:center;border:1px solid #cdcdcd;border-left:0px !important;">
-                                      <button class="btn btn-xs {{ $warnaVerifikasi }}" id="statusVerifikasi" onclick="statusVerifikasi('{{$dtnarsum->id_kegiatandetail}}')">Verifikasi</button>
-                                    </td>
-                                  </tr>
-                                @endforeach
-                              </table>
+                              @endforeach
+                            </table>
                             @endif
                           </td>
                           <td class="ratatengah">

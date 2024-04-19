@@ -5,6 +5,7 @@
         .ratatengah{ text-align: center !important; }
         .ratakanan{ text-align: right; }
         .ratakiri{ text-align: left; }
+        .vertikaltengah{ vertical-align: middle !important;}
         .warnabg-gray{
             background-color: #F8F9FA;
         }
@@ -99,17 +100,18 @@
                             <table id="tabeldata" class="table table-bordered table-hover_ table-striped__" width="100%px">
                                 <thead>
                                     <tr>
-                                        <th class="ratatengah warnabg-gray" width="3%">No</th>
-                                        <th class="ratatengah warnabg-gray" width="19%">Nama narasumber</th>
-                                        <th class="ratatengah warnabg-gray" width="3%">Jam</th>
-                                        <th class="ratatengah warnabg-gray" width="11%">Honor 1 Jam</th>
-                                        <th class="ratatengah warnabg-gray" width="12%">Jumlah Honor</th>
-                                        <th class="ratatengah warnabg-gray" width="8%">PPH</th>
-                                        <th class="ratatengah warnabg-gray" width="11%">Potongan PPH</th>
-                                        <th class="ratatengah warnabg-gray" width="13%">Jumlah Dibayar</th>
-                                        <th class="ratatengah warnabg-gray" width="12%">Status</th>
-                                        <th class="ratatengah warnabg-gray" width="7%">Aksi</th>
-                                    </tr>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="3%">No</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="18%">Nama narasumber</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="3%">Jam</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="11%">Honor 1 Jam</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="11%">Jumlah Honor</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="5%">PPH</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="10%">Potongan PPH</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="10%">Jumlah Dibayar</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="10%">SPPD</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="12%">Status</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="7%">Aksi</th>
+                                      </tr>
                                 </thead>
                                 <tbody></tbody>
                               </table>
@@ -306,6 +308,7 @@
                 {data: 'pph', name: 'pph'},
                 {data: 'potongan_pph', name: 'potongan_pph'},
                 {data: 'jumlah_bayar', name: 'jumlah_bayar'},
+                {data: 'sppd', name: 'sppd'},
                 {data: 'status', name: 'status'},
                 {data: 'action'}
             ],

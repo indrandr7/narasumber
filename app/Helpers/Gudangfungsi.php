@@ -51,12 +51,22 @@ class Gudangfungsi{
 	}
 
 	public static function formatrupiah($angka){
-		$hasil_rupiah = "Rp. " . number_format($angka,0,'','.');
+		if ($angka == 0 || $angka == '' || is_null($angka)){
+			$hasil_rupiah = 0;
+		}else{
+			$hasil_rupiah = "Rp. " . number_format($angka,0,'','.');
+		}
+
 		return $hasil_rupiah;
 	}
 
 	public static function formatuang($angka){
-		$hasil_rupiah = number_format($angka,0,'','.');
+		if ($angka == 0 || $angka == '' || is_null($angka)){
+			$hasil_rupiah = 0;
+		}else{
+			$hasil_rupiah = number_format($angka,0,'','.');
+		}
+		
 		return $hasil_rupiah;
 	}
 
