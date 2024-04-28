@@ -222,6 +222,7 @@
                   $('#divFile').html('')
 
                   var fileUndangan = resp.data.file_undangan;
+                  var id_kegiatan = resp.data.id_kegiatan;
                   var html;
                   $('#file_undangan').val('')
                   $('#file_undangancurrent').val(fileUndangan)
@@ -229,7 +230,7 @@
                   if (fileUndangan == ''){
                     html = $('#divFile').html('<label for="file_undangan" class="col-sm-3 col-form-label"></label><div class="col-sm-9"><i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;File not available</div>')
                   }else{
-                    html = $('#divFile').html('<label for="file_undangan" class="col-sm-3 col-form-label"></label><div class="col-sm-9"><a href=""><i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;'+fileUndangan+'</a></div>')
+                    html = $('#divFile').html('<label for="file_undangan" class="col-sm-3 col-form-label"></label><div class="col-sm-9"><a href="{{ url('kegiatan/download?tipe=kegiatan&klm=undangan&id=') }}'+id_kegiatan+'"><i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;'+fileUndangan+'</a></div>')
                   }
                 
                   $('#btnTambahNarsum').prop('disabled', false)

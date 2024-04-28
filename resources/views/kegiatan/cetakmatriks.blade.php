@@ -106,7 +106,7 @@
                             <tr>
                                 <td style="background-color:#F1F1F1;padding: 4px;width:5%;border:none;border:1px solid #cdcdcd;">{{ $key+1 }}.</td>
                                 <td style="background-color:#F1F1F1;padding: 4px;width:50%;border:none;border:1px solid #cdcdcd;">{{ $dtnarsum->namalengkap }}</td>
-                                <td style="text-align:right;padding: 4px;width:50%;border:none;border:1px solid #cdcdcd;">{{ Gudangfungsi::formatuang($dtnarsum->jumlahhonor) }}</td>
+                                <td style="text-align:right;padding: 4px;width:50%;border:none;border:1px solid #cdcdcd;">{{ Gudangfungsi::formatuang($dtnarsum->jumlah_bayar) }}</td>
                                 <td style="text-align:right;padding: 4px;width:50%;border:none;border:1px solid #cdcdcd;">{{ Gudangfungsi::formatuang($dtnarsum->nominal_sppd) }}</td>
                                 <td style="text-align:center;padding: 4px;width:50%;border:none;border:1px solid #cdcdcd;">{{ ($dtnarsum->is_transfer == 'yes' ? 'Ya' : 'Tidak') }}</td>
                             </tr>

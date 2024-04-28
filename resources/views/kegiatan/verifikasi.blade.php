@@ -16,10 +16,6 @@
             <li class="breadcrumb-item"><a href="">Home</a></li>
             <li class="breadcrumb-item active">Dashboard</li>
           </ol>
-
-          <button class="btn btn-sidebar btn-primary" onclick="showFormAdd()">
-            <i class="fas fa-plus fa-fw"></i> Tambah baru
-          </button>
         </nav>
       </div>
     </div>
@@ -81,7 +77,13 @@
                             @endif
                           </td>
                           <td class="ratatengah">
-                            <a href="{{ url('kegiatan/verifikasilihat/'.$keg->kode_kegiatan) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ url('kegiatan/cetakusulan?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak Usulan" target="_blank">
+                              <i class="nav-icon fas fa-file-pdf"></i>
+                            </a>
+                            <a href="{{ url('kegiatan/cetakkwitansi?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak Kwitansi" target="_blank">
+                              <i class="nav-icon fas fa-file-pdf"></i>
+                            </a>
+                            <a href="{{ url('kegiatan/verifikasilihat/'.$keg->kode_kegiatan) }}" class="btn btn-xs btn-success" title="Lihat Detail Kegiatan">
                               <i class="nav-icon fas fa-check"></i>
                             </a>
                             {{-- <button class="btn btn-sm btn-secondary"><i class="nav-icon fas fa-trash"></i></button> --}}

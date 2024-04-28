@@ -84,7 +84,7 @@
                                       <label for="jumlahdibayar" class="col-sm-3 col-form-label"></label>
                                       <div class="col-sm-9">
                                         @if ($kegiatan->file_undangan != '')
-                                          <a href="#" target="_blank">
+                                          <a href="{{ url('kegiatan/download?id='.$kegiatan->id_kegiatan).'&tipe=kegiatan&klm=undangan' }}">
                                             <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_undangan }}
                                           </a>
                                         @else
@@ -104,7 +104,7 @@
                                       <label for="jumlahdibayar" class="col-sm-3 col-form-label"></label>
                                       <div class="col-sm-9">
                                         @if ($kegiatan->file_laporankegiatan != '')
-                                          <a href="#" target="_blank">
+                                          <a href="{{ url('kegiatan/download?id='.$kegiatan->id_kegiatan).'&tipe=kegiatan&klm=laporankegiatan' }}">
                                             <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_laporankegiatan }}
                                           </a>
                                         @else

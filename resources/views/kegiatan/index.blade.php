@@ -73,11 +73,11 @@
                   <thead>
                     <tr>
                       <th class="ratatengah warnabg" width="5%">No</th>
-                      <th class="ratatengah warnabg" width="20%">Judul Kegiatan</th>
+                      <th class="ratatengah warnabg" width="19%">Judul Kegiatan</th>
                       <th class="ratatengah warnabg" width="10%">Tanggal</th>
                       <th class="ratatengah warnabg" width="10%">Tempat</th>
                       <th class="ratatengah warnabg" width="45%">Narasumber</th>
-                      <th class="ratatengah warnabg" width="10%">Aksi</th>
+                      <th class="ratatengah warnabg" width="11%">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -111,7 +111,7 @@
                                   <tr>
                                     <td style="padding: 4px;width:5%;border:1px solid #cdcdcd;">{{ $key+1 }}.</td>
                                     <td style="padding: 4px;width:30%;border:1px solid #cdcdcd;">{{ $dtnarsum->namalengkap }}</td>
-                                    <td style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->jumlahhonor) }}</td>
+                                    <td style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->jumlah_bayar) }}</td>
                                     <td style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->nominal_sppd) }}</td>
                                     <td style="padding: 4px 1px 4px 1px;width:10%;text-align:center;border:1px solid #cdcdcd;border-right:0px !important;">
                                       <button class="btn btn-xs {{ $warnaTransfer }}" id="statusTransfer" onclick="statusTransfer('{{$dtnarsum->id_kegiatandetail}}')">Transfer</button>
@@ -125,10 +125,16 @@
                             @endif
                           </td>
                           <td class="ratatengah">
-                            <a href="{{ url('kegiatan/edit/'.$keg->kode_kegiatan) }}" class="btn btn-sm btn-success">
+                            <a href="{{ url('kegiatan/cetakusulan?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak Usulan" target="_blank">
+                              <i class="nav-icon fas fa-file-pdf"></i>
+                            </a>
+                            <a href="{{ url('kegiatan/cetakkwitansi?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak Kwitansi" target="_blank">
+                              <i class="nav-icon fas fa-file-pdf"></i>
+                            </a>
+                            <a href="{{ url('kegiatan/edit/'.$keg->kode_kegiatan) }}" class="btn btn-xs btn-success" title="Edit">
                               <i class="nav-icon fas fa-edit"></i>
                             </a>
-                            <button class="btn btn-sm btn-secondary"><i class="nav-icon fas fa-trash"></i></button>
+                            <button class="btn btn-xs btn-secondary" onclick="hapus({{ $keg->id_kegiatan }})" title="Hapus"><i class="nav-icon fas fa-trash"></i></button>
                           </td>
                         </tr>
 
@@ -152,6 +158,12 @@
   </div>
 
   <script type="text/javascript">
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     function statusTransfer(id_kegiatandetail){
       alert('Transfer '+id_kegiatandetail)
     }
@@ -173,6 +185,48 @@
 
     function reloadTable(){
         $('#tabelku').DataTable().ajax.reload();
+    }
+
+    function hapus(id){
+      event.preventDefault(); // prevent form submit
+
+      swal({
+        title: "Apakah kamu yakin?",
+        text: "Kamu akan kehilangan data untuk selamanya! ",
+        icon: "warning",
+        buttons: {
+              confirm: 'Ya',
+              cancel: 'Batal'
+            },
+        dangerMode: false,
+      }).then((willDelete) => {
+        if (willDelete) {
+        	$.ajax({
+        		url: "{{ url('/kegiatan/delete') }}",
+        		type: 'POST',
+        		data: {"id":id},
+        		dataType: 'json',
+                      // processData: false,
+                      // contentType: false,
+        		success: function(resp){
+        			if (resp.result == "success"){
+        				swal({
+        						title: "",
+        						text: resp.message,
+        						icon: "success",
+        					}).then(function(){
+        						// reloadTable();
+                    location.reload()
+        					}
+        				);
+        			}
+        		},
+        		error: function(jqXHR, textStatus, errorThrown){
+        			console.log('jqXMLHTTReq: '+jqXHR+', Status: '+textStatus+', Error: '+errorThrown);
+        		}
+         		});
+        }
+      });
     }
 
     $(function (){

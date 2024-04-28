@@ -85,7 +85,7 @@
                 <input type="file" class="form-control" id="surattugas" name="surattugas">
             </div>
             <div class="col-sm-5 mt-2">
-              <a href="" target="_blank">Draft ST internal</a> | <a href="" target="_blank">Draft surat keterangan</a>
+              <a href="" target="_blank">Draft Surat Tugas</a>
             </div>
           </div>
           <hr />

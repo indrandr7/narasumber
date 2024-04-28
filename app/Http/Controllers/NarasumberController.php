@@ -237,4 +237,18 @@ class NarasumberController extends Controller
         return response()->json($response);
     }
 
+    public function unduh(Request $req){
+        $id_narsum = $req->id;
+
+        $narsum = DB::table('narasumber')->where('id_narasumber', $id_narsum)->first();
+
+        if (File::exists('public/uploads/narasumber/'.$narsum->file_npwp) == true){
+            $filepath = public_path('uploads/narasumber/'.$narsum->file_npwp);
+
+            return response()->download($filepath);
+        }else{
+            abort(404);
+        }
+    }
+
 }

@@ -90,14 +90,14 @@
                 <input type="hidden" class="form-control" id="surattugas_current" name="surattugas_current" value="{{ $kegdetail->file_surattugas }}">
             </div>
             <div class="col-sm-5 mt-2">
-              <a href="" target="_blank">Draft ST internal</a> | <a href="" target="_blank">Draft surat keterangan</a>
+              <a href="{{ url('kegiatan/downloadst') }}">Draft Surat Tugas</a>
             </div>
           </div>
           <div class="form-group row">
             <label for="jumlahdibayar" class="col-sm-3 col-form-label"></label>
             <div class="col-sm-9">
               @if ($kegdetail->file_surattugas != '')
-                <a href="#" target="_blank">
+                <a href="{{ url('kegiatan/download?id='.$kegdetail->id_kegiatan).'&tipe=kegdetail&klm=surattugas' }}">
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegdetail->file_surattugas }}
                 </a>
               @else
@@ -139,7 +139,7 @@
             <label for="jumlahdibayar" class="col-sm-3 col-form-label"></label>
             <div class="col-sm-9">
               @if ($kegdetail->file_kwitansi != '')
-                <a href="#" target="_blank">
+                <a href="{{ url('kegiatan/download?id='.$kegdetail->id_kegiatan).'&tipe=kegdetail&klm=kwitansi' }}">
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegdetail->file_kwitansi }}
                 </a>
               @else
@@ -203,7 +203,7 @@
             <label for="jumlahdibayar" class="col-sm-3 col-form-label"></label>
             <div class="col-sm-9">
               @if ($kegdetail->file_transfer != '')
-                <a href="#" target="_blank">
+                <a href="{{ url('kegiatan/download?id='.$kegdetail->id_kegiatan).'&tipe=kegdetail&klm=transfer' }}">
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegdetail->file_transfer }}
                 </a>
               @else

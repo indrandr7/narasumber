@@ -137,7 +137,7 @@
             <label for="jumlahdibayar" class="col-sm-3 col-form-label"></label>
             <div class="col-sm-9">
               @if ($narasumber->file_npwp != '')
-                <a href="#" target="_blank">
+                <a href="{{ url('/narasumber/unduh?id='.$narasumber->id_narasumber) }}">
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $narasumber->file_npwp }}
                 </a>
               @else

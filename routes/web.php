@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/kegiatan/edit/{kodekegiatan}', [KegiatanController::class, 'edit']);
     Route::post('/kegiatan/saveupdate', [KegiatanController::class, 'saveupdate']);
     Route::post('/kegiatan/saveupdatedata', [KegiatanController::class, 'saveupdatedata']);
-    Route::get('/kegiatan/delete', [KegiatanController::class, 'delete']);
+    Route::post('/kegiatan/delete', [KegiatanController::class, 'delete']);
     Route::get('/kegiatan/narsumadd', [KegiatanController::class, 'narsumadd']);
     Route::post('/kegiatan/narsumlist', [KegiatanController::class, 'narsumlist']);
     Route::post('/kegiatan/narsumsave', [KegiatanController::class, 'narsumsave']);
@@ -46,6 +46,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('/kegiatan/cari', [KegiatanController::class, 'cari']);
     Route::get('/kegiatan/cetakmatrik', [KegiatanController::class, 'cetakmatrik']);
     Route::get('/kegiatan/cetakmatriks', [KegiatanController::class, 'cetakmatriks']);
+    Route::get('/kegiatan/download', [KegiatanController::class, 'downloadfile']);
+    Route::get('/kegiatan/downloadst', [KegiatanController::class, 'downloadst']);
 
     Route::get('/narasumber', [NarasumberController::class, 'index']);
     Route::get('/narasumber/getlist', [NarasumberController::class, 'getlist']);
@@ -54,6 +56,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/narasumber/edit', [NarasumberController::class, 'edit']);
     Route::post('/narasumber/saveupdate', [NarasumberController::class, 'saveupdate']);
     Route::post('/narasumber/delete', [NarasumberController::class, 'delete']);
+    // Route::get('/narasumber/downloadnarsum____', [NarasumberController::class, 'downloadnarsum']);
+    Route::get('/narasumber/unduh', [NarasumberController::class, 'unduh']);
 
     Route::get('/bagian', [BagianController::class, 'index']);
     Route::get('/bagian/getlist', [BagianController::class, 'getlist']);

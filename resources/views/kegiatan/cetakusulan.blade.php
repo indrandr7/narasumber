@@ -70,13 +70,20 @@
             <td style="width:10%"></td>
         </tr>
     </table>
-    <table border="0" cellspacing="0" cellpadding="5" width="100%">
+    <table border="0" cellspacing="0" cellpadding="2" width="100%">
         <tr>
             <td style="width:33%;font-size:10px;border-bottom:1px solid #000000;">TELEPON: (021) 52921621</td>
             <td style="width:33%;font-size:10px;text-align:center;border-bottom:1px solid #000000;">FAKSIMILE: (021) 52920190</td>
             <td style="width:34%;font-size:10px;text-align:right;border-bottom:1px solid #000000;">e-mail: sekretariat@den.go.id</td>
         </tr>
-        <td colspan="3" style="text-align: center;font-size:15px;font-weight:bold;padding-top:10px;">NOTA DINAS</td>
+        <tr>
+            <td colspan="3" style="text-align:center;font-size:15px;font-weight:bold;padding-top:10px;">NOTA DINAS</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="font-size:13px;">Nomor:</td>
+            <td></td>
+        </tr>
     </table>
     <br>
     <table border="0" cellspacing="0" cellpadding="5" width="100%">
@@ -103,9 +110,9 @@
         </tr>
         <tr>
             <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:5%">No</td>
-            <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:25%">Nama/NIP</td>
+            <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:30%">Nama/NIP</td>
             <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:10%">PKT/Gol</td>
-            <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:45%">Jabatan</td>
+            <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:40%">Jabatan</td>
             <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:15%">Ket</td>
         </tr>
         @php $no=1; @endphp
@@ -120,85 +127,45 @@
         @php $no++ @endphp
         @endforeach
     </table>
-
-
-
-    {{-- <center><p style="font-size: 12px;margin-bottom:0px;font-weight:bold;">DAFTAR__ PEMBARAYAN NARASUMBER/PAKAR/PEMBICARA KHUSUS</center>
-    <p style="font-size: 12px;font-weight:bold;margin-bottom:0px;">KEGIATAN : {{ $kegiatan->nama_kegiatan }}</p>
-    <p style="font-size: 12px;font-weight:bold;margin-bottom:0px;margin-top:4px;">M A : {{ $kegiatan->kodemak }}</p>
-    <p style="font-size: 12px;margin-bottom:10px;margin-top:15px;">TANGGAL RAPAT : {{ Gudangfungsi::tanggalindo($kegiatan->tanggal) }}</p> --}}
-    
-    {{-- <table border="1" cellspacing="0" cellpadding="5" width="100%">
+    <br>
+    <table border="0" cellspacing="0" cellpadding="1" width="100%">
         <tr>
-            <td style="width:4%;text-align:center;font-size:12px;" rowspan="2">NO</td>
-            <td style="width:20%;text-align:center;font-size:12px;" rowspan="2">NAMA</td>
-            <td style="width:10%;text-align:center;font-size:12px;" rowspan="2">UNDANGAN</td>
-            <td style="width:12%;text-align:center;font-size:12px;" rowspan="2">HONOARIUM 1 (SATU) JAM<br>(Rp)</td>
-            <td style="text-align:center;font-size:12px;" colspan="2">HONORARIUM YANG DIBAYARKAN</td>
-            <td style="width:12%;text-align:center;font-size:12px;" rowspan="2">POTONGAN PPH Ps 21<br>(Rp)</td>
-            <td style="width:12%;text-align:center;font-size:12px;" rowspan="2">JUMLAH YANG DIBAYARKAN<br>(Rp)</td>
-            <td style="width:15%;text-align:center;font-size:12px;" rowspan="2">TANDA TANGAN</td>
+            <td style="font-size:12px;border:0px !important;width:60%;"></td>
+            <td style="font-size:12px;border:0px !important;width:40%;">Jakarta, {{ Gudangfungsi::tanggalindo(date('Y-m-d')) }}</td>
         </tr>
         <tr>
-            <td style="width:5%;text-align:center;font-size:12px;">@ JAM</td>
-            <td style="width:10%;text-align:center;font-size:12px;">(Rp)</td>
-        </tr>
-        @php
-            $no = 1;
-        @endphp
-        @foreach ($kegdetail as $kd)
-        <tr>
-            <td style="font-size:12px;text-align:center;height:40px;">{{ $no }}</td>
-            <td style="font-size:12px;">{{ $kd->namalengkap }}</td>
-            <td style="font-size:12px;text-align:center;">Narasumber</td>
-            <td style="font-size:12px;text-align:right;">{{ Gudangfungsi::formatuang($kd->honor_satujam) }}</td>
-            <td style="font-size:12px;text-align:center;">{{ $kd->jumlah_jam }}</td>
-            <td style="font-size:12px;text-align:right;">{{ Gudangfungsi::formatuang($kd->jumlahhonor) }}</td>
-            <td style="font-size:12px;text-align:right;">{{ Gudangfungsi::formatuang($kd->potongan_pph) }}</td>
-            <td style="font-size:12px;text-align:right;">{{ Gudangfungsi::formatuang($kd->jumlah_bayar) }}</td>
-            <td style="font-size:12px;">&nbsp;</td>
-        </tr>
-        @php
-            $no++;
-        @endphp
-        @endforeach
-
-        <tr>
-            <td style="font-size:12px;text-align:center;" colspan="5">JUMLAH</td>
-            <td style="font-size:12px;text-align:right;">{{ Gudangfungsi::formatuang($sumnominal->jumlah_honor) }}</td>
-            <td style="font-size:12px;text-align:right;">{{ Gudangfungsi::formatuang($sumnominal->jumlah_potongan) }}</td>
-            <td style="font-size:12px;text-align:right;">{{ Gudangfungsi::formatuang($sumnominal->jumlah_dibayar) }}</td>
-            <td></td>
+            <td style="font-size:12px;border:0px !important;" colspan="2">Mengetahui:</td>
         </tr>
         <tr>
-            @php
-                Config::set('terbilang.locale', 'id');
-            @endphp
-            <td style="font-size:12px;text-align:center;" colspan="9">Terbilang: {{ Terbilang::make($sumnominal->jumlah_honor, 'rupiah') }}</td>
+           <td style="font-size:12px;border:0px !important;">{{ $pejabat->nama_biro }}</td> 
+           <td style="font-size:12px;border:0px !important;">{{ $pejabat->nama_bagian }}</td> 
         </tr>
-    </table>    
-
+        <tr>
+            <td colspan="2" style="height: 60px;"> &nbsp;</td>
+        </tr>
+        <tr>
+            <td style="font-size:12px;border:0px !important;">{{ $pejabat->kabiro }}</td> 
+            <td style="font-size:12px;border:0px !important;">{{ $pejabat->kabag }}</td> 
+         </tr>
+        <tr>
+            <td style="font-size:12px;border:0px !important;">{{ $pejabat->kabironip }}</td> 
+            <td style="font-size:12px;border:0px !important;">{{ $pejabat->kabagnip }}</td> 
+         </tr>
+    </table>
+    <br>
     <table border="0" cellspacing="0" cellpadding="5" width="100%">
-        <tr><td colspan="9" style="height: 15px;"></td></tr>
         <tr>
-            <td style="width:4%;text-align:center;font-size:12px;"></td>
-            <td style="width:57%;text-align:left;font-size:12px;line-height:16px;" colspan="5">
+            <td style="border:1px solid #000000;font-size:12px;width:50%">
                 Mengetahui/Menyetujui<br>
-                Pejabat Pembuat Komitmen
-                <br><br><br><br>
-                {{ $ppk->namalengkap }}<br>
-                {{ $ppk->nip }}
+                Pejabat Pembuat Komitmen Setjen DEN
+                <br><br><br><br><br>
+                {{ $ppk->namalengkap }}<br>{{ $ppk->nip }}
             </td>
-            <td style="width:39%;text-align:left;font-size:12px;line-height:16px;" colspan="3">
-                Jakarta,<br>
-                Bendahara Pengeluaran
-                <br><br><br><br>
-                {{ $bendahara->namalengkap }}<br>
-                {{ $bendahara->nip }}
+            <td style="border:1px solid #000000;font-size:12px;width:50%;vertical-align:top;">
+                Catatan:
             </td>
         </tr>
-    </table> --}}
-
+    </table>
     
 </body>
 </html>

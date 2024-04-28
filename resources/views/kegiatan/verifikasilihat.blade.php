@@ -75,8 +75,8 @@
                                             <td  class="top-borderless padr-0 padtopbot">:</td>
                                             <td class="top-borderless padl-2 padtopbot">
                                             @if ($kegiatan->file_undangan != '')
-                                                <a href="#" target="_blank">
-                                                <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_undangan }}
+                                                <a href="{{ url('kegiatan/download?id='.$kegiatan->id_kegiatan).'&tipe=kegiatan&klm=undangan' }}">
+                                                    <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_undangan }}
                                                 </a>
                                             @else
                                                 <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;No file available
@@ -88,8 +88,8 @@
                                             <td class="top-borderless padr-0 padtopbot">:</td>
                                             <td class="top-borderless padl-2 padtopbot">
                                                 @if ($kegiatan->file_laporankegiatan != '')
-                                                    <a href="#" target="_blank">
-                                                    <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_laporankegiatan }}
+                                                    <a href="{{ url('kegiatan/download?id='.$kegiatan->id_kegiatan).'&tipe=kegiatan&klm=laporankegiatan' }}">
+                                                        <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegiatan->file_laporankegiatan }}
                                                     </a>
                                                 @else
                                                     <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;No file available

@@ -73,9 +73,9 @@
             <td class="top-borderless padr-0 padtopbot">:</td>
             <td class="top-borderless padl-2 padtopbot">
               @if ($kegdetail->file_surattugas != '')
-                  <a href="" target="_blank">
+                <a href="{{ url('kegiatan/download?id='.$kegdetail->id_kegiatan).'&tipe=kegdetail&klm=surattugas' }}">
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegdetail->file_surattugas }}
-                  </a>
+                </a>
               @else
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;No file available
               @endif
@@ -107,9 +107,9 @@
             <td class="top-borderless padr-0_ padtopbot">:</td>
             <td class="top-borderless padl-2 padtopbot">
               @if ($kegdetail->file_kwitansi != '')
-                  <a href="#" target="_blank">
+                <a href="{{ url('kegiatan/download?id='.$kegdetail->id_kegiatan).'&tipe=kegdetail&klm=kwitansi' }}">
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegdetail->file_kwitansi }}
-                  </a>
+                </a>
               @else
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;No file available
               @endif

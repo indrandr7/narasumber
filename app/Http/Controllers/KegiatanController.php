@@ -208,7 +208,55 @@ class KegiatanController extends Controller
     }
 
     public function delete(Request $req){
+        $id_kegiatan = $req->id;
 
+        $kegiatan = DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->first();
+
+        $hapusDetail = DB::table('kegiatan_detail')->where('kode_kegiatan', $kegiatan->kode_kegiatan)->delete();
+
+        if ($hapusDetail){
+            $hapusKegiatan = DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->delete();
+
+            if ($hapusKegiatan){
+                $response = ['result'=>'success', 'message'=>'Deleting data successfully'];
+            }else{
+                $response = ['result'=>'failed', 'message'=>'Deleteting data failed'];
+            }
+        }else{
+            $response = ['result'=>'failed', 'message'=>'Deleteting data failed'];
+        }
+
+        return response()->json($response);
+    }
+
+    public function downloadFile(Request $req){
+        $id_kegiatan = $req->id;
+        $tipe = $req->tipe;
+        $klm = $req->klm;
+
+        $namafield = "file_".$klm;
+        $kegiatan = DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->first();
+        if ($tipe == 'kegiatan'){
+            $filepath = public_path('uploads/kegiatan/'.$kegiatan->$namafield);
+            $namafile = $kegiatan->$namafield;
+        }else{
+            $kegdetail = DB::table('kegiatan_detail')->where('kode_kegiatan', $kegiatan->kode_kegiatan)->first();
+
+            $filepath = public_path('uploads/kegiatan/'.$kegdetail->$namafield);
+            $namafile = $kegdetail->$namafield;
+        }
+
+        if (File::exists('public/uploads/kegiatan/'.$namafile) == true){
+            return response()->download($filepath);
+        }else{
+            abort(404);
+        }
+    }
+
+    public function downloadst(){
+        $filepath = public_path('uploads/surattugas/surat-tugas-narasumber.docx');
+
+        return response()->download($filepath);
     }
 
     public function narsumadd(Request $req){
@@ -294,8 +342,8 @@ class KegiatanController extends Controller
                                 <i class="nav-icon fas fa-trash"></i>
                             </button>';
                 }else{
-                    $actionBtn = '<button type="button" onclick="showEditFormNarsum(\''.$row->id_kegiatandetail.'\')" title="Edit" class="btn btn-xs btn-success m-b-0 ">
-                                <i class="nav-icon fas fa-edit"></i>
+                    $actionBtn = '<button type="button" onclick="showEditFormNarsum(\''.$row->id_kegiatandetail.'\')" title="Lihat detail" class="btn btn-xs btn-success m-b-0 ">
+                                <i class="nav-icon fas fa-check"></i>
                             </button>';
                 }
                 return $actionBtn;
@@ -386,7 +434,9 @@ class KegiatanController extends Controller
 
         $data['judulhalaman'] = 'Edit Narasumber';
         $data['narasumber'] = DB::table('narasumber')->orderBy('namalengkap', 'asc');
-        $data['kegdetail'] = DB::table('kegiatan_detail')->where('id_kegiatandetail', $id_kegiatandetail)->first();
+        $data['kegdetail'] = DB::table('kegiatan_detail as det')
+                             ->join('kegiatan as keg', 'keg.kode_kegiatan', '=', 'det.kode_kegiatan')
+                             ->where('det.id_kegiatandetail', $id_kegiatandetail)->first();
         $data['goles'] = DB::table('golongan as gol')
                         ->join('narasumber as nr', 'gol.id_golongan', '=', 'nr.id_golongan')
                         ->join('eselon as es', 'es.id_eselon', '=', 'nr.id_eselon')
@@ -615,6 +665,11 @@ class KegiatanController extends Controller
         $data['sumnominal'] = DB::table('kegiatan_detail')
                                  ->select(DB::raw('SUM(jumlahhonor) AS jumlah_honor, SUM(potongan_pph) AS jumlah_potongan, SUM(jumlah_bayar) AS jumlah_dibayar'))
                                  ->where('kode_kegiatan', $data['kegiatan']->kode_kegiatan)->first();
+        $data['pejabat'] = DB::table('users as us')
+                            ->select('bg.nama_pejabat as kabag', 'bg.nip as kabagnip', 'nama_bagian', 'nama_biro', 'br.nama_pejabat as kabiro', 'br.nip as kabironip')
+                            ->join('bagian as bg', 'us.id_bagian', '=', 'bg.id_bagian')
+                            ->join('biro as br', 'br.id_biro', '=', 'bg.id_biro')
+                            ->where('us.id_bagian', Session::get('sesUserID'))->first();
         $data['ppk'] = DB::table('ppk')->where('tahun', date('Y'))->first();
         $data['bendahara'] = DB::table('bendahara')->where('tahun', date('Y'))->first();
 
