@@ -9,6 +9,9 @@ use App\Http\Controllers\BiroController;
 use App\Http\Controllers\PpkController;
 use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\PenggunaController;
+use App\Http\Controllers\EselonController;
+use App\Http\Controllers\GolonganController;
+use App\Http\Controllers\MataanggaranController;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/auth', [LoginController::class, 'authenticate']);
@@ -100,5 +103,29 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('/pengguna/delete', [PenggunaController::class, 'delete']);
     Route::get('/pengguna/gantipassword', [PenggunaController::class, 'gantipassword']);
     Route::post('/pengguna/passwordupdate', [PenggunaController::class, 'passwordupdate']);
+
+    Route::get('/eselon', [EselonController::class, 'index']);
+    Route::get('/eselon/getlist', [EselonController::class, 'getlist']);
+    Route::get('/eselon/add', [EselonController::class, 'add']);
+    Route::post('/eselon/save', [EselonController::class, 'save']);
+    Route::get('/eselon/edit', [EselonController::class, 'edit']);
+    Route::post('/eselon/saveupdate', [EselonController::class, 'saveupdate']);
+    Route::post('/eselon/delete', [EselonController::class, 'delete']);
+
+    Route::get('/golongan', [GolonganController::class, 'index']);
+    Route::get('/golongan/getlist', [GolonganController::class, 'getlist']);
+    Route::get('/golongan/add', [GolonganController::class, 'add']);
+    Route::post('/golongan/save', [GolonganController::class, 'save']);
+    Route::get('/golongan/edit', [GolonganController::class, 'edit']);
+    Route::post('/golongan/saveupdate', [GolonganController::class, 'saveupdate']);
+    Route::post('/golongan/delete', [GolonganController::class, 'delete']);
+
+    Route::get('/mataanggaran', [MataanggaranController::class, 'index']);
+    Route::get('/mataanggaran/getlist', [MataanggaranController::class, 'getlist']);
+    Route::get('/mataanggaran/add', [MataanggaranController::class, 'add']);
+    Route::post('/mataanggaran/save', [MataanggaranController::class, 'save']);
+    Route::get('/mataanggaran/edit', [MataanggaranController::class, 'edit']);
+    Route::post('/mataanggaran/saveupdate', [MataanggaranController::class, 'saveupdate']);
+    Route::post('/mataanggaran/delete', [MataanggaranController::class, 'delete']);
 
 });
