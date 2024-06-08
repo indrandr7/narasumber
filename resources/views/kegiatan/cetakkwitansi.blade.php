@@ -109,7 +109,12 @@
             @php
                 Config::set('terbilang.locale', 'id');
             @endphp
-            <td style="font-size:12px;text-align:center;" colspan="9">Terbilang: {{ Terbilang::make($sumnominal->jumlah_honor, 'rupiah') }}</td>
+            <td style="font-size:12px;text-align:center;" colspan="9">
+                Terbilang: 
+                @if ($sumnominal->jumlah_honor != 0 || $sumnominal->jumlah_honor != '')
+                    {{ Terbilang::make($sumnominal->jumlah_honor, 'rupiah') }}
+                @endif
+            </td>
         </tr>
     </table>    
 

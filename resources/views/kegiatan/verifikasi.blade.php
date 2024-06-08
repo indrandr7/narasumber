@@ -5,6 +5,9 @@
   .ratatengah{
     text-align: center;
   }
+  .kolom-narsum{
+    border:none;border-bottom:1px solid #ED7115;background-color: #F7CD9C;
+  }
 </style>
 
 <div class="content-wrapper">
@@ -29,7 +32,7 @@
             <div class="card">
               <div class="card-body">
                 
-                <table id="tabeldata" class="table table-bordered table-hover_ table-striped__" width="100%px">
+                <table id="tabeldata" class="table table-bordered table-hover_ table-striped" width="100%px">
                   <thead>
                     <tr>
                       <th class="ratatengah" width="5%">No</th>
@@ -63,12 +66,12 @@
                                       $warnaVerifikasi = ($dtnarsum->is_verified == 'yes' ? 'btn-success' : 'btn-danger');
                                   @endphp
                                   <tr>
-                                    <td style="padding: 4px;width:5%;border:none;border-bottom:1px solid #cdcdcd;">{{ $key+1 }}.</td>
-                                    <td style="padding: 4px;width:50%;border:none;border-bottom:1px solid #cdcdcd;">{{ $dtnarsum->namalengkap }}</td>
-                                    <td style="padding: 4px;width:10%;text-align:center;border:none;border-bottom:1px solid #cdcdcd;">
+                                    <td style="padding: 4px;width:5%;border:none;border-bottom:1px solid #ED7115;background-color: #F7CD9C;">{{ $key+1 }}.</td>
+                                    <td style="padding: 4px;width:50%;border:none;border-bottom:1px solid #ED7115;background-color: #F7CD9C;">{{ $dtnarsum->namalengkap }}</td>
+                                    <td style="padding: 4px;width:10%;text-align:center;border:none;border-bottom:1px solid #ED7115;background-color: #F7CD9C;">
                                       <button class="btn btn-xs {{ $warnaTransfer }}" id="statusTransfer" onclick="statusTransfer('{{$dtnarsum->id_kegiatandetail}}')">Transfer</button>
                                     </td>
-                                    <td style="padding: 4px;width:10%;text-align:center;border:none;border-bottom:1px solid #cdcdcd;">
+                                    <td style="padding: 4px;width:10%;text-align:center;border:none;border-bottom:1px solid #ED7115;background-color: #F7CD9C;">
                                       <button class="btn btn-xs {{ $warnaVerifikasi }}" id="statusVerifikasi" onclick="statusVerifikasi('{{$dtnarsum->id_kegiatandetail}}')">Verifikasi</button>
                                     </td>
                                   </tr>

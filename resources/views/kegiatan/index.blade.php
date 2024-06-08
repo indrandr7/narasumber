@@ -69,14 +69,14 @@
             <div class="card">
               <div class="card-body">
                 
-                <table id="tabeldata" class="table table-bordered table-hover_ table-striped__" width="100%px">
+                <table id="tabeldata" class="table table-bordered table-hover_ table-striped" width="100%px">
                   <thead>
                     <tr>
-                      <th class="ratatengah warnabg" width="5%">No</th>
-                      <th class="ratatengah warnabg" width="19%">Judul Kegiatan</th>
-                      <th class="ratatengah warnabg" width="10%">Tanggal</th>
-                      <th class="ratatengah warnabg" width="10%">Tempat</th>
+                      <th class="ratatengah warnabg" width="4%">No</th>
+                      <th class="ratatengah warnabg" width="15%">Judul Kegiatan</th>
+                      <th class="ratatengah warnabg" width="15%">Tanggal/Tempat</th>
                       <th class="ratatengah warnabg" width="45%">Narasumber</th>
+                      <th class="ratatengah warnabg" width="10%">Penginput</th>
                       <th class="ratatengah warnabg" width="11%">Aksi</th>
                     </tr>
                   </thead>
@@ -86,8 +86,10 @@
                         <tr>
                           <td>{{ $no }}</td>
                           <td>{{ $keg->nama_kegiatan }}</td>
-                          <td>{{ Gudangfungsi::tanggalindoshort($keg->tanggal) }}</td>
-                          <td>{{ $keg->tempat }}</td>
+                          <td>
+                            {{ Gudangfungsi::tanggalindoshort($keg->tanggal) }} <hr style="margin-top:0px;margin-bottom:0px;">
+                            {{ $keg->tempat }}
+                          </td>
                           <td>
                             @php
                                 $narsum = Gudangfungsi::getKegiatanDetail($keg->kode_kegiatan);
@@ -124,6 +126,7 @@
                               </table>
                             @endif
                           </td>
+                          <td>{{ $keg->name }}</td>
                           <td class="ratatengah">
                             <a href="{{ url('kegiatan/cetakusulan?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak Usulan" target="_blank">
                               <i class="nav-icon fas fa-file-pdf"></i>

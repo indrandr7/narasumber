@@ -17,7 +17,7 @@
             <nav class="navbar navbar-light__ bg-light__ justify-content-between">
                 <ol class="breadcrumb float-sm-left">
                   <li class="breadcrumb-item"><a href="">Home</a></li>
-                  <li class="breadcrumb-item active">Dashboard [INI HALAMAN CARI.PHP]</li>
+                  <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
               </nav>
         </div>

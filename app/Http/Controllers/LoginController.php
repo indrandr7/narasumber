@@ -31,6 +31,7 @@ class LoginController extends Controller
             Session::put('sesUsername', $pengguna->username);
             Session::put('sesName', $pengguna->name);
             Session::put('sesLevel', $pengguna->level);
+            Session::put('sesBagian', $pengguna->id_bagian);
 
             if ($pengguna->level == 'administrator' || $pengguna->level == 'operator'){
                 return redirect()->intended('kegiatan');

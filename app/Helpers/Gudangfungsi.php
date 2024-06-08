@@ -27,6 +27,12 @@ class Gudangfungsi{
         return $data;
     }
 
+	public static function getKegiatan($kode_kegiatan){
+		$data = DB::table('kegiatan')->where('kode_kegiatan', $kode_kegiatan)->first();
+
+		return $data;
+	}
+
     public static function normalNumber($angka){
         return str_replace('.', '', $angka);
     }

@@ -20,7 +20,9 @@ use Riskihajar\Terbilang\Facades\Terbilang;
 class KegiatanController extends Controller
 {
     public function index(){
-        $data['kegiatan'] = DB::table('kegiatan')->orderBy('created_at', 'desc');
+        $data['kegiatan'] = DB::table('kegiatan as keg')
+                            ->join('users as us', 'keg.id_users', '=', 'us.id')
+                            ->orderBy('keg.created_at', 'desc');
 
         return view('kegiatan.index', $data);
     }
@@ -60,6 +62,8 @@ class KegiatanController extends Controller
                  'tanggal' => $tanggal,
                  'tempat' => $tempat,
                  'file_undangan' => $namafile,
+                 'id_users' => Session::get('sesUserID'),
+                 'id_bagian' => Session::get('sesBagian'),
                  'created_at' => date('Y-m-d H:i:s'),
                 ];
 
@@ -115,6 +119,8 @@ class KegiatanController extends Controller
                  'tanggal' => $tanggal,
                  'tempat' => $tempat,
                  'file_undangan' => $namafile,
+                 'id_users' => Session::get('sesUserID'),
+                 'id_bagian' => Session::get('sesBagian'),
                  'updated_at' => date('Y-m-d H:i:s'),
                 ];
 
@@ -669,7 +675,7 @@ class KegiatanController extends Controller
                             ->select('bg.nama_pejabat as kabag', 'bg.nip as kabagnip', 'nama_bagian', 'nama_biro', 'br.nama_pejabat as kabiro', 'br.nip as kabironip')
                             ->join('bagian as bg', 'us.id_bagian', '=', 'bg.id_bagian')
                             ->join('biro as br', 'br.id_biro', '=', 'bg.id_biro')
-                            ->where('us.id_bagian', Session::get('sesUserID'))->first();
+                            ->where('us.id_bagian', $data['kegiatan']->id_bagian)->first();
         $data['ppk'] = DB::table('ppk')->where('tahun', date('Y'))->first();
         $data['bendahara'] = DB::table('bendahara')->where('tahun', date('Y'))->first();
 

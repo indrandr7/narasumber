@@ -73,7 +73,7 @@
             <td class="top-borderless padr-0 padtopbot">:</td>
             <td class="top-borderless padl-2 padtopbot">
               @if ($kegdetail->file_surattugas != '')
-                <a href="{{ url('kegiatan/download?id='.$kegdetail->id_kegiatan).'&tipe=kegdetail&klm=surattugas' }}">
+                <a href="{{ url('kegiatan/download?id='.Gudangfungsi::getKegiatan($kegdetail->kode_kegiatan)->id_kegiatan).'&tipe=kegdetail&klm=surattugas' }}">
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegdetail->file_surattugas }}
                 </a>
               @else
@@ -107,7 +107,7 @@
             <td class="top-borderless padr-0_ padtopbot">:</td>
             <td class="top-borderless padl-2 padtopbot">
               @if ($kegdetail->file_kwitansi != '')
-                <a href="{{ url('kegiatan/download?id='.$kegdetail->id_kegiatan).'&tipe=kegdetail&klm=kwitansi' }}">
+                <a href="{{ url('kegiatan/download?id='.Gudangfungsi::getKegiatan($kegdetail->kode_kegiatan)->id_kegiatan).'&tipe=kegdetail&klm=kwitansi' }}">
                   <i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;{{ $kegdetail->file_kwitansi }}
                 </a>
               @else
