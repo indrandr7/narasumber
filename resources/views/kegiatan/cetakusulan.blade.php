@@ -120,7 +120,7 @@
         <tr>
             <td style="border:1px solid #000000;font-size:12px;">{{ $no }}</td>
             <td style="border:1px solid #000000;font-size:12px;">{{ $kd->namalengkap }}</td>
-            <td style="border:1px solid #000000;font-size:12px;"></td>
+            <td style="border:1px solid #000000;font-size:12px;">{{ $kd->namalengkap }}</td>
             <td style="border:1px solid #000000;font-size:12px;">{{ $kd->jabatan }}</td>
             <td style="border:1px solid #000000;font-size:12px;"></td>
         </tr>

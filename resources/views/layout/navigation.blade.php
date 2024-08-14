@@ -15,7 +15,7 @@
             </a>
         </div>
         <div class="brand-link" style="font-size: 15px;text-align:center; color: #ffffff;font-weight:bold;padding-top:0px;">
-            Monitoring Evaluasi<br>Pembayaran Narasumber (Monisa)
+            Sistem Informasi<br>Pembayaran Narasumber <br>(SiNara)
         </div>
        
         <div class="sidebar">

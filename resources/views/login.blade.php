@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nara</title>
+    <title>SiNara</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -13,13 +13,23 @@
     <link rel="stylesheet" href="{{ asset('lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('lte/dist/css/adminlte.min.css')}}">
+
+    <style>
+        body {
+            background-image: url('{{ asset('lte/img/bg.jpg')}}'); /* Replace 'your-image-url.jpg' with the actual URL or path to your image */
+            background-size: cover; /* Make the image cover the whole page */
+            background-position: center; /* Center the background image */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            height: 100vh; /* Full height to cover the viewport */
+        }
+    </style>
   </head>
 
   <body class="hold-transition login-page">
     <div class="login-box">
       <div class="card card-outline card-primary">
         <div class="card-header text-center">
-          <a href="../../index2.html" class="h1"><b>Nara</b></a>
+          <a href="../../index2.html" class="h1"><b>SiNara</b></a>
           <p class="login-box-msg">Sistem Informasi Narasumber</p>
         </div>
         <div class="card-body">

@@ -57,11 +57,11 @@
     </style>
 </head>
 <body>
-    {{-- <h5><center>DAFTAR PEMBARAYAN NARASUMBER/PAKAR/PEMBICARA KHUSUS</center></h5> --}}
-    <center><p style="font-size: 12px;margin-bottom:0px;font-weight:bold;">DAFTAR PEMBARAYAN NARASUMBER/PAKAR/PEMBICARA KHUSUS</center>
-    <p style="font-size: 12px;font-weight:bold;margin-bottom:0px;">KEGIATAN : {{ $kegiatan->nama_kegiatan }}</p>
-    <p style="font-size: 12px;font-weight:bold;margin-bottom:0px;margin-top:4px;">M A : {{ $kegiatan->kodemak }}</p>
-    <p style="font-size: 12px;margin-bottom:10px;margin-top:15px;">TANGGAL RAPAT : {{ Gudangfungsi::tanggalindo($kegiatan->tanggal) }}</p>
+    {{-- <h5><center>Daftar Pengajuan Pembayaran Narasumber dan Moderator</center></h5> --}}
+    <center><p style="font-size: 12px;margin-bottom:0px;font-weight:bold;">Daftar Pengajuan Pembayaran Narasumber dan Moderator</center>
+    <center><p style="font-size: 12px;font-weight:bold;margin-bottom:0px;">{{ $kegiatan->nama_kegiatan }}</p></center>
+    <center><p style="font-size: 12px;margin-bottom:0px;margin-top:4px;;">{{ Gudangfungsi::tanggalindo($kegiatan->tanggal) }}</p></center>
+    <center><p style="font-size: 12px;margin-bottom:15px;margin-top:4px;">MAK : {{ $kegiatan->kodemak }}</p></center>
     
     <table border="1" cellspacing="0" cellpadding="5" width="100%">
         <tr>
@@ -122,7 +122,7 @@
         <tr><td colspan="9" style="height: 15px;"></td></tr>
         {{-- <tr>
             <td style="width: 57%;" colspan="6"></td>
-            <td style="width:39%;font-size:12px;" colspan="3">Jakarta, </td>
+            <td style="width:39%;font-size:12px;" colspan="3">Jakarta, {{ Gudangfungsi::tanggalindo($kegiatan->tanggal) }}</td>
         </tr> --}}
         <tr>
             <td style="width:4%;text-align:center;font-size:12px;"></td>
@@ -131,14 +131,14 @@
                 Pejabat Pembuat Komitmen
                 <br><br><br><br>
                 {{ $ppk->namalengkap }}<br>
-                {{ $ppk->nip }}
+                NIP. {{ $ppk->nip }}
             </td>
             <td style="width:39%;text-align:left;font-size:12px;line-height:16px;" colspan="3">
                 Jakarta,<br>
                 Bendahara Pengeluaran
                 <br><br><br><br>
                 {{ $bendahara->namalengkap }}<br>
-                {{ $bendahara->nip }}
+                NIP. {{ $bendahara->nip }}
             </td>
         </tr>
     </table>
