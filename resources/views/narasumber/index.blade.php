@@ -47,7 +47,7 @@
                                         <th class="ratatengah warnabg-gray vertikaltengah" width="3%">Status Pegawai</th>
                                         <th class="ratatengah warnabg-gray vertikaltengah" width="11%">Gol/Eselon</th>
                                         <th class="ratatengah warnabg-gray vertikaltengah" width="12%">Jabatan</th>
-                                        <th class="ratatengah warnabg-gray vertikaltengah" width="8%">Kontak</th>
+                                        <th class="ratatengah warnabg-gray vertikaltengah" width="12%">NPWP</th>
                                         <th class="ratatengah warnabg-gray vertikaltengah" width="11%">Unit Kerja</th>
                                         <th class="ratatengah warnabg-gray vertikaltengah" width="7%">Aksi</th>
                                     </tr>

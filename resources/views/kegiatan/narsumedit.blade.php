@@ -149,8 +149,22 @@
           </div>
 
           <hr />
-          <h5 style="font-weight: bold;"><u>Status Pembarayan Narasumber</u></h5>
+          <h5 style="font-weight: bold;"><u>Status Pembayaran Narasumber</u></h5>
           <br>
+          <div class="form-group row">
+            <label for="jumlahdibayar" class="col-sm-3 col-form-label">Status cair</label>
+            <div class="col-sm-3">
+              <select class="form-control" id="statuscair" name="statuscair" style="width: 130%;">
+                @if ($kegdetail->is_cair == 'yes')
+                  <option value="yes" selected>Ya</option>
+                  <option value="no">Tidak</option>    
+                @else
+                  <option value="yes">Ya</option>
+                  <option value="no" selected>Tidak</option>
+                @endif
+              </select>
+            </div>
+          </div>
           <div class="form-group row">
             <label for="jumlahdibayar" class="col-sm-3 col-form-label">Status bayar/transfer</label>
             <div class="col-sm-3">

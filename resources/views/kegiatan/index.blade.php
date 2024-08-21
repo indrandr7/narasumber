@@ -8,6 +8,8 @@
   .warnabg{
     background-color: #F8F9FA;
   }
+  .pbody{ font-size: 13.5px;}
+  .phead{ font-size: 14px; }
 </style>
 
 <div class="content-wrapper">
@@ -72,25 +74,26 @@
                 <table id="tabeldata" class="table table-bordered table-hover_ table-striped" width="100%px">
                   <thead>
                     <tr>
-                      <th class="ratatengah warnabg" width="4%">No</th>
-                      <th class="ratatengah warnabg" width="15%">Judul Kegiatan</th>
-                      <th class="ratatengah warnabg" width="15%">Tanggal/Tempat</th>
-                      <th class="ratatengah warnabg" width="45%">Narasumber</th>
-                      <th class="ratatengah warnabg" width="10%">Penginput</th>
-                      <th class="ratatengah warnabg" width="11%">Aksi</th>
+                      <th class="ratatengah warnabg phead" width="3%">No</th>
+                      <th class="ratatengah warnabg phead" width="15%">Judul Kegiatan</th>
+                      <th class="ratatengah warnabg phead" width="10%">Tanggal/Tempat</th>
+                      <th class="ratatengah warnabg phead" width="41%">Narasumber</th>
+                      <th class="ratatengah warnabg phead" width="10%">Kelengkapan</th>
+                      <th class="ratatengah warnabg phead" width="10%">Penginput</th>
+                      <th class="ratatengah warnabg phead" width="11%">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
                     @php $no=1; @endphp
                     @foreach ($kegiatan->get() as $keg)
                         <tr>
-                          <td>{{ $no }}</td>
-                          <td>{{ $keg->nama_kegiatan }}</td>
-                          <td>
+                          <td class="pbody">{{ $no }}</td>
+                          <td class="pbody">{{ $keg->nama_kegiatan }}</td>
+                          <td class="pbody">
                             {{ Gudangfungsi::tanggalindoshort($keg->tanggal) }} <hr style="margin-top:0px;margin-bottom:0px;">
                             {{ $keg->tempat }}
                           </td>
-                          <td>
+                          <td class="pbody">
                             @php
                                 $narsum = Gudangfungsi::getKegiatanDetail($keg->kode_kegiatan);
                             @endphp
@@ -100,33 +103,52 @@
                             @else
                               <table width="100%">
                                 <tr>
-                                  <td style="text-align:center;border:0px;" colspan="2"></td>
-                                  <td style="text-align:center;background-color:#cdcdcd;">Honor (Rp)</td>
-                                  <td style="text-align:center;background-color:#cdcdcd;">SPPD (Rp)</td>
-                                  <td style="text-align:center;background-color:#cdcdcd;" colspan="2">Status</td>
+                                  <td style="text-align:center;border:0px;" colspan="2" class="pbody"></td>
+                                  <td style="text-align:center;background-color:#cdcdcd;" class="pbody">Honor (Rp)</td>
+                                  <td style="text-align:center;background-color:#cdcdcd;" class="pbody">SPPD (Rp)</td>
+                                  <td style="text-align:center;background-color:#cdcdcd;" class="pbody" colspan="3">Status</td>
                                 </tr>
                                 @foreach ($narsum->get() as $key => $dtnarsum)
                                   @php
-                                      $warnaTransfer = ($dtnarsum->is_transfer == 'yes' ? 'btn-success' : 'btn-danger');
-                                      $warnaVerifikasi = ($dtnarsum->is_verified == 'yes' ? 'btn-success' : 'btn-danger');
+                                      // $warnaTransfer = ($dtnarsum->is_transfer == 'yes' ? 'btn-success' : 'btn-danger');
+                                      // $warnaVerifikasi = ($dtnarsum->is_verified == 'yes' ? 'btn-success' : 'btn-danger');
+                                      // $warnaCair = ($dtnarsum->is_cair == 'yes' ? 'btn-success' : 'btn-danger');
+
+                                      $warnaTransfer = ($dtnarsum->is_transfer == 'yes' ? 'success' : 'danger');
+                                      $warnaVerifikasi = ($dtnarsum->is_verified == 'yes' ? 'success' : 'danger');
+                                      $warnaCair = ($dtnarsum->is_cair == 'yes' ? 'success' : 'danger');
                                   @endphp
                                   <tr>
-                                    <td style="padding: 4px;width:5%;border:1px solid #cdcdcd;">{{ $key+1 }}.</td>
-                                    <td style="padding: 4px;width:30%;border:1px solid #cdcdcd;">{{ $dtnarsum->namalengkap }}</td>
-                                    <td style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->jumlah_bayar) }}</td>
-                                    <td style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->nominal_sppd) }}</td>
-                                    <td style="padding: 4px 1px 4px 1px;width:10%;text-align:center;border:1px solid #cdcdcd;border-right:0px !important;">
-                                      <button class="btn btn-xs {{ $warnaTransfer }}" id="statusTransfer" onclick="statusTransfer('{{$dtnarsum->id_kegiatandetail}}')">Transfer</button>
+                                    <td class="pbody" style="padding: 4px;width:5%;border:1px solid #cdcdcd;">{{ $key+1 }}.</td>
+                                    <td class="pbody" style="padding: 4px;width:30%;border:1px solid #cdcdcd;">{{ $dtnarsum->namalengkap }}</td>
+                                    <td class="pbody" style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->jumlah_bayar) }}</td>
+                                    <td class="pbody" style="padding: 4px;width:20%;border:1px solid #cdcdcd;text-align:right;">{{ Gudangfungsi::formatuang($dtnarsum->nominal_sppd) }}</td>
+                                    <td class="pbody" style="padding: 4px 1px 4px 4px;width:10%;text-align:center;border:1px solid #cdcdcd;border-right:0px !important;">
+                                      <span class="right badge badge-{{ $warnaTransfer }}">Transfer</span>
+                                      {{-- <button class="btn btn-xs {{ $warnaTransfer }}" id="statusTransfer" onclick="statusTransfer('{{$dtnarsum->id_kegiatandetail}}')">Transfer</button> --}}
                                     </td>
-                                    <td style="padding: 4px 1px 4px 1px;padding: 4px;width:10%;text-align:center;border:1px solid #cdcdcd;border-left:0px !important;">
-                                      <button class="btn btn-xs {{ $warnaVerifikasi }}" id="statusVerifikasi" onclick="statusVerifikasi('{{$dtnarsum->id_kegiatandetail}}')">Verifikasi</button>
+                                    <td class="pbody" style="padding: 4px 0px 4px 1px;width:10%;text-align:center;border:1px solid #cdcdcd;border-right:0px !important;border-left:0px !important;">
+                                      <span class="right badge badge-{{ $warnaCair }}">Cair</span>
+                                      {{-- <button class="btn btn-xs {{ $warnaCair }}" id="statusCair" onclick="statusCair('{{$dtnarsum->id_kegiatandetail}}')">Cair</button> --}}
+                                    </td>
+                                    <td class="pbody" style="padding: 4px 4px 4px 1px;width:10%;text-align:center;border:1px solid #cdcdcd;border-left:0px !important;">
+                                      <span class="right badge badge-{{ $warnaVerifikasi }}">Ver</span>
+                                      {{-- <button class="btn btn-xs {{ $warnaVerifikasi }}" id="statusVerifikasi" onclick="statusVerifikasi('{{$dtnarsum->id_kegiatandetail}}')">Verifikasi</button> --}}
                                     </td>
                                   </tr>
                                 @endforeach
                               </table>
                             @endif
                           </td>
-                          <td>{{ $keg->name }}</td>
+                          <td class="pbody ratatengah">
+                            @php
+                            $warnaUndangan = ($keg->file_undangan == '' ? 'danger' : 'success');
+                            $warnaKegiatan = ($keg->file_laporankegiatan == '' ? 'danger' : 'success');
+                            @endphp
+                            <span class="right badge badge-{{ $warnaUndangan }}">Undangan</span>
+                            <span class="right badge badge-{{ $warnaKegiatan }}">Laporan Kegiatan</span>
+                          </td>
+                          <td class="pbody">{{ $keg->name }}</td>
                           <td class="ratatengah">
                             <a href="{{ url('kegiatan/cetakusulan?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak Usulan" target="_blank">
                               <i class="nav-icon fas fa-file-pdf"></i>
@@ -238,7 +260,9 @@
       });
 
       $('#tanggal').daterangepicker()
-      $('#tabeldata').DataTable();
+      $('#tabeldata').DataTable({
+        "ordering":false
+      });
     })
   </script>
 @endsection

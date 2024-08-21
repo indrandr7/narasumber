@@ -3,6 +3,15 @@ function asset($path, $secure = null)
 {
     return app('url')->asset("public/".$path, $secure);
 }
+atau lakukan clear config #php artisan config:clear
+
+Keterangan sudah cair apa belum     --> add new column is_cair (tabel kegiatan_detail)
+keterangan kelengkapan dokumen      
+keterangan kelengkapan data narsum
+Export data narsum
+[10:44, 20/08/2024] Den Ricky: jadi di setiap kegiatan yang di input itu ada keterangan uang udh cair apa blm, query data cm udh atau blm
+[10:44, 20/08/2024] Den Ricky: trs nambah kolom buat nampilin kelengkapan dokumen, kyk proden gt sih aku bayangannya
+[10:44, 20/08/2024] Den Ricky: yang data narsum pun sama
 
 Fungsi terbilang
 https://hapiz.medium.com/laravel-terbilang-b2c089848312

@@ -9,6 +9,8 @@
         .warnabg-gray{
             background-color: #F8F9FA;
         }
+        .pbody{ font-size: 13.5px;}
+        .phead{ font-size: 14px; }
     </style>
 
     <div class="content-header">
@@ -132,20 +134,20 @@
                                 </button>
                             </div>
 
-                            <table id="tabeldata" class="table table-bordered table-hover_ table-striped__" width="100%px">
+                            <table id="tabeldata" class="table table-responsive table-bordered table-hover_ table-striped__" width="100%px">
                                 <thead>
                                   <tr>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="3%">No</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="18%">Nama narasumber</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="3%">Jam</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="11%">Honor 1 Jam</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="11%">Jumlah Honor</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="5%">PPH</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="10%">Potongan PPH</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="10%">Jumlah Dibayar</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="10%">SPPD</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="12%">Status</th>
-                                    <th class="ratatengah warnabg-gray vertikaltengah" width="7%">Aksi</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="3%">No</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="16%">Nama narasumber</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="3%">Jam</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="11%">Honor 1 Jam</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="11%">Jumlah Honor</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="10%">PPH/Potongan (Rp)</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="12%">Jumlah Dibayar</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="10%">SPPD</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="10%">Kelengkapan</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="12%">Status</th>
+                                    <th class="ratatengah warnabg-gray vertikaltengah phead" width="7%">Aksi</th>
                                   </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -320,16 +322,17 @@
                 {data: 'jumlah_jam', name: 'jumlah_jam'},
                 {data: 'honor_satujam', name: 'honor_satujam'},
                 {data: 'jumlahhonor', name: 'jumlahhonor'},
-                {data: 'pph', name: 'pph'},
-                {data: 'potongan_pph', name: 'potongan_pph'},
+                {data: 'pajakph', name: 'pajakph'},
+                // {data: 'potongan_pph', name: 'potongan_pph'},
                 {data: 'jumlah_bayar', name: 'jumlah_bayar'},
                 {data: 'sppd', name: 'sppd'},
+                {data: 'kelengkapan', name: 'kelengkapan'},
                 {data: 'status', name: 'status'},
                 {data: 'action'}
             ],
             columnDefs: [
-                { className: "ratakanan", "targets": [3,4,5,6,7,8]},
-                { className: "ratatengah", "targets": [2,9,10]},
+                { className: "ratakanan", "targets": [3,4,5,6,7]},
+                { className: "ratatengah", "targets": [2,8,9,10]},
                 // { className: "ndrparagraf", "targets": "_all"},
             ],
             "dom": 'rtip',

@@ -301,28 +301,34 @@ class KegiatanController extends Controller
         $datatable = DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('namalengkap', function($row){
-                return $row->namalengkap;
+                return '<p class="pbody">'.$row->namalengkap.'</p>';
             })
             ->addColumn('jumlah_jam', function($row){
-                return $row->jumlah_jam;
+                return '<p class="pbody">'.$row->jumlah_jam.'</p>';
             })
             ->addColumn('honor_satujam', function($row){
-                return Gudangfungsi::formatrupiah($row->honor_satujam);
+                return '<p class="pbody">'.Gudangfungsi::formatrupiah($row->honor_satujam).'</p>';
             })
             ->addColumn('jumlahhonor', function($row){
-                return Gudangfungsi::formatrupiah($row->jumlahhonor);
+                return '<p class="pbody">'.Gudangfungsi::formatrupiah($row->jumlahhonor).'</p>';
             })
-            ->addColumn('pph', function($row){
-                return $row->pph.'%';
+            ->addColumn('pajakph', function($row){
+                // return '<p class="pbody">'.$row->pph.'%</p>';
+                return '<p class="pbody">'.$row->pph.'%<br>'.Gudangfungsi::formatrupiah($row->potongan_pph).'</p>';
             })
             ->addColumn('potongan_pph', function($row){
-                return Gudangfungsi::formatrupiah($row->potongan_pph);
+                return '<p class="pbody">'.Gudangfungsi::formatrupiah($row->potongan_pph).'</p>';
             })
             ->addColumn('jumlah_bayar', function($row){
-                return Gudangfungsi::formatrupiah($row->jumlah_bayar);
+                return '<p class="pbody">'.Gudangfungsi::formatrupiah($row->jumlah_bayar).'</p>';
             })
             ->addColumn('sppd', function($row){
-                return Gudangfungsi::formatrupiah($row->nominal_sppd);
+                return '<p class="pbody">'.Gudangfungsi::formatrupiah($row->nominal_sppd).'</p>';
+            })
+            ->addColumn('kelengkapan', function($row){
+                $warnaST = ($row->file_surattugas == '' ? 'danger' : 'success');
+                
+                return '<span class="right badge badge-'.$warnaST.'">Surat Tugas</span>';
             })
             ->addColumn('status', function($row){
                 if ($row->is_transfer == 'yes'){
@@ -337,7 +343,13 @@ class KegiatanController extends Controller
                     $warnaverifikasi = 'danger';
                 }
 
-                return '<span class="right badge badge-'.$warnatransfer.'">Transfer</span>&nbsp;<span class="right badge badge-'.$warnaverifikasi.'">Verified</span>';
+                if ($row->is_cair == 'yes'){
+                    $warnacair = 'success';
+                }else{
+                    $warnacair = 'danger';
+                }
+
+                return '<span class="right badge badge-'.$warnatransfer.'">Transfer</span>&nbsp;<span class="right badge badge-'.$warnaverifikasi.'">Verified</span>&nbsp;<span class="right badge badge-'.$warnacair.'">Cair</span>';
             })
             ->addColumn('action', function($row){
                 if (Session::get('sesLevel') == 'administrator' || Session::get('sesLevel') == 'operator'){
@@ -354,7 +366,7 @@ class KegiatanController extends Controller
                 }
                 return $actionBtn;
             })
-            ->rawColumns(['namalengkap', 'jumlah_jam', 'honor_satujam', 'jumlahhonor', 'potongan_pph', 'jumlah_bayar', 'sppd', 'status', 'action'])
+            ->rawColumns(['namalengkap', 'jumlah_jam', 'honor_satujam', 'jumlahhonor', 'pajakph', 'potongan_pph', 'jumlah_bayar', 'sppd', 'kelengkapan', 'status', 'action'])
             ->make(true);
         
         return $datatable;
@@ -460,6 +472,7 @@ class KegiatanController extends Controller
         $perjadin = ($req->post('perjadin') == '' ? 'no' : $req->post('perjadin'));
         $nominalperjadin = ($req->post('nominalperjadin') == '' ? '0' : Gudangfungsi::normalNumber($req->post('nominalperjadin')));
         $statustransfer = $req->post('statustransfer');
+        $statuscair = $req->post('statuscair');
         $tanggaltransfer = Gudangfungsi::formtomysql($req->post('tanggaltransfer'));
         $nomorspm = $req->post('nomorspm');
 
@@ -517,6 +530,7 @@ class KegiatanController extends Controller
                 'nominal_sppd' => $nominalperjadin,
                 'file_kwitansi' => $namafileKwitansiperjadin,
                 'is_transfer' => $statustransfer,
+                'is_cair' => $statuscair,
                 'tanggal_transfer' => $tanggaltransfer,
                 'no_spm' => $nomorspm,
                 'file_transfer' => $namafile_buktitransfer,
@@ -730,6 +744,73 @@ class KegiatanController extends Controller
         $pdf = PDF::loadView('kegiatan/cetakmatriks', $data)->setPaper('a4', 'landscape');
 
         return $pdf->stream('matriks-narsum.pdf');
+    }
+
+    public function cetakdokumen(Request $req){
+        $kodekegiatan = 'yZ6HS6xrth';
+        
+        $keg = DB::table('kegiatan')->where('kode_kegiatan', $kodekegiatan)->first();
+        $keg = DB::table('kegiatan_detail')->where('kode_kegiatan', $kodekegiatan)->first();
+
+        echo "Nama Kegiatan: ".$keg->nama_kegiatan;
+    }
+
+    public function halo(){
+        return "Oke";
+    }
+
+    public function MergeDocs($uploadedFiles){
+        $apiKey = 'indra_adv@yahoo.com_8MJymy4edgCFTV4sBHhCYkuU909JZyVyaHCQNINEJXqPxyXgXCU0SP2IzXtqkVNQ';
+        
+        // Create URL
+        $url = "https://api.pdf.co/v1/pdf/merge2";
+        
+        // Prepare requests params
+        $parameters = array();
+        $parameters["name"] = "result.pdf";
+        $parameters["url"] = join(",", $uploadedFiles);
+
+        // Create Json payload
+        $data = json_encode($parameters);
+
+        // Create request
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array("x-api-key: " . $apiKey, "Content-type: application/json"));
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+        // Execute request
+        $result = curl_exec($curl);
+        
+        if (curl_errno($curl) == 0){
+            $status_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            
+            if ($status_code == 200){
+                $json = json_decode($result, true);
+                
+                if (!isset($json["error"]) || $json["error"] == false){
+                    $resultFileUrl = $json["url"];
+                    
+                    // Display link to the result document
+                    echo "<div><h2>Merge Result:</h2><a href='" . $resultFileUrl . "' target='_blank'>" . $resultFileUrl . "</a></div>";
+                }else{
+                    // Display service reported error
+                    echo "<p>Error: " . $json["message"] . "</p>"; 
+                }
+            }else{
+                // Display request error
+                echo "<p>Status code: " . $status_code . "</p>"; 
+                echo "<p>" . $result . "</p>"; 
+            }
+        }else{
+            // Display CURL error
+            echo "Error: " . curl_error($curl);
+        }
+        
+        // Cleanup
+        curl_close($curl);
     }
 
     // public function hasilcari(Request $req){
