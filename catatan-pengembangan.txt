@@ -1,3 +1,9 @@
+asset public tidak teridentifikasi, edit file vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+function asset($path, $secure = null)
+{
+    return app('url')->asset("public/".$path, $secure);
+}
+
 Fungsi terbilang
 https://hapiz.medium.com/laravel-terbilang-b2c089848312
 https://github.com/riskihajar/terbilang
