@@ -14,7 +14,7 @@ use App\Helpers\Gudangfungsi;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
-use Barryvdh\DomPDF\Facade\PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Riskihajar\Terbilang\Facades\Terbilang;
 
 class KegiatanController extends Controller
@@ -681,6 +681,7 @@ class KegiatanController extends Controller
                             ->where('keg.id_kegiatan', $id_kegiatan)->first();
         $data['kegdetail'] = DB::table('kegiatan_detail as det')
                              ->join('narasumber as nar', 'det.id_narasumber', '=', 'nar.id_narasumber')
+                             ->join('golongan as gol', 'nar.id_golongan', '=', 'gol.id_golongan')
                              ->where('det.kode_kegiatan', $data['kegiatan']->kode_kegiatan)->get();
         $data['sumnominal'] = DB::table('kegiatan_detail')
                                  ->select(DB::raw('SUM(jumlahhonor) AS jumlah_honor, SUM(potongan_pph) AS jumlah_potongan, SUM(jumlah_bayar) AS jumlah_dibayar'))

@@ -111,7 +111,7 @@
         <tr>
             <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:5%">No</td>
             <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:30%">Nama/NIP</td>
-            <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:10%">PKT/Gol</td>
+            <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:10%">Gol</td>
             <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:40%">Jabatan</td>
             <td style="border:1px solid #000000;text-align:center;font-weight:bold;font-size:12px;width:15%">Ket</td>
         </tr>
@@ -120,7 +120,7 @@
         <tr>
             <td style="border:1px solid #000000;font-size:12px;">{{ $no }}</td>
             <td style="border:1px solid #000000;font-size:12px;">{{ $kd->namalengkap }}</td>
-            <td style="border:1px solid #000000;font-size:12px;">{{ $kd->namalengkap }}</td>
+            <td style="border:1px solid #000000;font-size:12px;text-align:center;">{{ $kd->golongan }}</td>
             <td style="border:1px solid #000000;font-size:12px;">{{ $kd->jabatan }}</td>
             <td style="border:1px solid #000000;font-size:12px;"></td>
         </tr>
