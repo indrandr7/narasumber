@@ -154,6 +154,9 @@
                               </table>
                         </div>
                         <div class="modal-footer justify-content-between__">
+                          <a href="{{ url('kegiatan/cetakdokumen?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-outline-warning">
+                            <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Berkas
+                          </a>
                           <a href="{{ url('kegiatan/cetakusulan?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-outline-primary">
                             <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Usulan
                           </a>
@@ -184,12 +187,13 @@
     });
 
     function showAddFormNarsum(){
-        var kodekegiatan = $('#kodekegiatan').val();
-        $('#modalku').modal('show').find('#modalku_content').load("{{ url('/kegiatan/narsumadd') }}?kode="+kodekegiatan);
+      var kodekegiatan = $('#kodekegiatan').val();
+      $('#modalku').modal('show').find('#modalku_content').load("{{ url('/kegiatan/narsumadd') }}?kode="+kodekegiatan);
     }
 
     function showEditFormNarsum(id_kegiatandetail){
-        $('#modalku').modal('show').find('#modalku_content').load("{{ url('/kegiatan/narsumedit') }}?id="+id_kegiatandetail);
+      var kodekegiatan = $('#kodekegiatan').val();
+      $('#modalku').modal('show').find('#modalku_content').load("{{ url('/kegiatan/narsumedit') }}?id="+id_kegiatandetail+"&kode="+kodekegiatan);
     }
 
     function reloadTable(){

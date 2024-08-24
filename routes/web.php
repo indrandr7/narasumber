@@ -12,6 +12,13 @@ use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\EselonController;
 use App\Http\Controllers\GolonganController;
 use App\Http\Controllers\MataanggaranController;
+use App\Http\Controllers\BengkelController;
+
+// Bengkel Route
+Route::get('/bengkel', [BengkelController::class, 'index']);
+Route::get('/bengkel/pdfmerge', [BengkelController::class, 'pdfmerge']);
+Route::get('/bengkel/cekdir', [BengkelController::class, 'cekdirektori']);
+
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/auth', [LoginController::class, 'authenticate']);

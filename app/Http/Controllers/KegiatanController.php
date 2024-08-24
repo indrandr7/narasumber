@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Riskihajar\Terbilang\Facades\Terbilang;
+use Illuminate\Support\Facades\Storage;
 
 class KegiatanController extends Controller
 {
@@ -51,7 +52,12 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafile = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads/kegiatan", "{$namafile}");
+            if (File::exists('public/uploads/kegiatan/'.$kodekegiatan == $kodekegiatan)){
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile}");
+            }else{
+                File::makeDirectory('public/uploads/kegiatan/'.$kodekegiatan);
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile}");
+            }
         }else{
             $namafile = '';
         }
@@ -109,7 +115,13 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafile = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads/kegiatan", "{$namafile}");
+            if (File::exists('public/uploads/kegiatan/'.$kodekegiatan == $kodekegiatan)){
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile}");
+            }else{
+                File::makeDirectory('public/uploads/kegiatan/'.$kodekegiatan);
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile}");
+            }
+            // $file->move("public/uploads/kegiatan", "{$namafile}");
         }else{
             $namafile = $req->post('file_undangancurrent');
         }
@@ -161,7 +173,13 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafile_undangan = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads/kegiatan", "{$namafile_undangan}");
+            if (File::exists("public/uploads/kegiatan/".$kodekegiatan)){
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile_undangan}");
+            }else{
+                File::makeDirectory("public/uploads/kegiatan/".$kodekegiatan);
+
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile_undangan}");
+            }
         }else{
             $namafile_undangan = $req->post('file_undangancurrent');
         }
@@ -173,7 +191,13 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafile_laporan = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads/kegiatan", "{$namafile_laporan}");
+            if (File::exists("public/uploads/kegiatan/".$kodekegiatan)){
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile_laporan}");
+            }else{
+                File::makeDirectory("public/uploads/kegiatan/".$kodekegiatan);
+
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile_laporan}");
+            }
         }else{
             $namafile_laporan = $req->post('file_laporankegiatancurrent');
         }
@@ -217,19 +241,30 @@ class KegiatanController extends Controller
         $id_kegiatan = $req->id;
 
         $kegiatan = DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->first();
+        $kegDetailCount = DB::table('kegiatan_detail')->where('kode_kegiatan', $kegiatan->kode_kegiatan)->count();
 
-        $hapusDetail = DB::table('kegiatan_detail')->where('kode_kegiatan', $kegiatan->kode_kegiatan)->delete();
+        if ($kegDetailCount != 0){
+            $hapusDetail = DB::table('kegiatan_detail')->where('kode_kegiatan', $kegiatan->kode_kegiatan)->delete();
 
-        if ($hapusDetail){
+            if ($hapusDetail){
+                $hapusKegiatan = DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->delete();
+
+                if ($hapusKegiatan){
+                    $response = ['result'=>'success', 'message'=>'Deleting data successfully'];
+                }else{
+                    $response = ['result'=>'failed', 'message'=>'Deleting data failed'];
+                }
+            }else{
+                $response = ['result'=>'failed', 'message'=>'Deleting data failed'];
+            }
+        }else{
             $hapusKegiatan = DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->delete();
 
             if ($hapusKegiatan){
                 $response = ['result'=>'success', 'message'=>'Deleting data successfully'];
             }else{
-                $response = ['result'=>'failed', 'message'=>'Deleteting data failed'];
+                $response = ['result'=>'failed', 'message'=>'Deleting data failed'];
             }
-        }else{
-            $response = ['result'=>'failed', 'message'=>'Deleteting data failed'];
         }
 
         return response()->json($response);
@@ -242,17 +277,18 @@ class KegiatanController extends Controller
 
         $namafield = "file_".$klm;
         $kegiatan = DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->first();
+
         if ($tipe == 'kegiatan'){
-            $filepath = public_path('uploads/kegiatan/'.$kegiatan->$namafield);
+            $filepath = public_path('uploads/kegiatan/'.$kegiatan->kode_kegiatan.'/'.$kegiatan->$namafield);
             $namafile = $kegiatan->$namafield;
         }else{
             $kegdetail = DB::table('kegiatan_detail')->where('kode_kegiatan', $kegiatan->kode_kegiatan)->first();
 
-            $filepath = public_path('uploads/kegiatan/'.$kegdetail->$namafield);
+            $filepath = public_path('uploads/kegiatan/'.$kegiatan->kode_kegiatan.'/'.$kegdetail->$namafield);
             $namafile = $kegdetail->$namafield;
         }
 
-        if (File::exists('public/uploads/kegiatan/'.$namafile) == true){
+        if (File::exists('public/uploads/kegiatan/'.$kegiatan->kode_kegiatan.'/'.$namafile) == true){
             return response()->download($filepath);
         }else{
             abort(404);
@@ -391,7 +427,13 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafileSurattugas = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads/kegiatan", "{$namafileSurattugas}");
+            if (File::exists("public/uploads/kegiatan/".$kodekegiatan)){
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafileSurattugas}");
+            }else{
+                File::makeDirectory("public/uploads/kegiatan/".$kodekegiatan);
+
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafileSurattugas}");
+            }
         }else{
             $namafileSurattugas = '';
         }
@@ -403,7 +445,13 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafileKwitansiperjadin = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads/kegiatan", "{$namafileKwitansiperjadin}");
+            if (File::exists("public/uploads/kegiatan/".$kodekegiatan)){
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafileKwitansiperjadin}");
+            }else{
+                File::makeDirectory("public/uploads/kegiatan/".$kodekegiatan);
+
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafileKwitansiperjadin}");
+            }
         }else{
             $namafileKwitansiperjadin = '';
         }
@@ -449,7 +497,9 @@ class KegiatanController extends Controller
     
     public function narsumedit(Request $req){
         $id_kegiatandetail = $req->get('id');
+        $kodekegiatan = $req->get('kode');
 
+        $data['kodekegiatan'] = $kodekegiatan;
         $data['judulhalaman'] = 'Edit Narasumber';
         $data['narasumber'] = DB::table('narasumber')->orderBy('namalengkap', 'asc');
         $data['kegdetail'] = DB::table('kegiatan_detail as det')
@@ -465,6 +515,7 @@ class KegiatanController extends Controller
 
     public function narsumsaveupdate(Request $req){
         $id_kegiatandetail = $req->post('id_kegiatandetail');
+        $kodekegiatan = $req->post('kodekegiatan');
         $jumlahjam = $req->post('jumlahjam');
         $jumlahhonor = Gudangfungsi::normalNumber($req->post('jumlahhonor'));
         $jumlahpotongan = Gudangfungsi::normalNumber($req->post('jumlahpotongan'));
@@ -483,7 +534,13 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafileSurattugas = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads/kegiatan", "{$namafileSurattugas}");
+            if (File::exists("public/uploads/kegiatan/".$kodekegiatan)){
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafileSurattugas}");
+            }else{
+                File::makeDirectory("public/uploads/kegiatan/".$kodekegiatan);
+
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafileSurattugas}");
+            }
         }else{
             $namafileSurattugas = $req->post('surattugas_current');
         }
@@ -495,7 +552,12 @@ class KegiatanController extends Controller
             $ekstensi = $file->getClientOriginalExtension();
             $namafileKwitansiperjadin = $namafileOri.'_'.time().'.'.$ekstensi;
 
-            $file->move("public/uploads/kegiatan", "{$namafileKwitansiperjadin}");
+            if (File::exists("public/uploads/kegiatan/".$kodekegiatan)){
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafileKwitansiperjadin}");
+            }else{
+                File::makeDirectory("public/uploads/kegiatan/".$kodekegiatan);
+                $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafileKwitansiperjadin}");
+            }
         }else{
             $namafileKwitansiperjadin = $req->post('kwitansiperjadin_current');
         }
@@ -510,7 +572,13 @@ class KegiatanController extends Controller
             $check=in_array($ekstensi, $allowedfileExtension);
             
             if ($check){
-                $file->move("public/uploads/kegiatan", "{$namafile_buktitransfer}");
+                if (File::exists("public/uploads/kegiatan/".$kodekegiatan)){
+                    $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile_buktitransfer}");
+                }else{
+                    File::exists("public/uploads/kegiatan/".$kodekegiatan);
+
+                    $file->move("public/uploads/kegiatan/".$kodekegiatan."/", "{$namafile_buktitransfer}");
+                }
             }else{
                 $response = ['result'=>'failed', 'message'=>'Tipe file harus image (png/jpg/jpeg/gif)'];
                 return response()->json($response);
@@ -651,8 +719,9 @@ class KegiatanController extends Controller
         return response()->json($response);
     }
 
-    public function cetakkwitansi(Request $req){
-        $id_kegiatan = $req->get('id');
+    // public function cetakkwitansi(Request $req){
+    public function cetakkwitansi($id_kegiatan){
+        // $id_kegiatan = $req->get('id');
 
         $data['judulhalaman'] = 'Kwitansi Honor Narsum';
         $data['kegiatan'] = DB::table('kegiatan as keg')
@@ -666,14 +735,25 @@ class KegiatanController extends Controller
                                  ->where('kode_kegiatan', $data['kegiatan']->kode_kegiatan)->first();
         $data['ppk'] = DB::table('ppk')->where('tahun', date('Y'))->first();
         $data['bendahara'] = DB::table('bendahara')->where('tahun', date('Y'))->first();
+        $kodekegiatan = $data['kegiatan']->kode_kegiatan;
 
         $pdf = PDF::loadView('kegiatan/cetakkwitansi', $data)->setPaper('a4', 'landscape');
 
-        return $pdf->stream('kwitansi-narsum.pdf');
+        // return $pdf->stream('kwitansi-narsum.pdf');  //Jika ingin menampilkan pdf ke satu halaman
+        if (File::exists('public/uploads/kegiatan/'.$kodekegiatan)){
+            $pdf->save('public/uploads/kegiatan/'.$kodekegiatan.'/'.$kodekegiatan.'-kwitansinarsum.pdf');    
+        }else{
+            File::makeDirectory('public/uploads/kegiatan/'.$kodekegiatan);
+            $pdf->save('public/uploads/kegiatan/'.$kodekegiatan.'/'.$kodekegiatan.'-kwitansinarsum.pdf');
+        }
+        
+        $dataUpdate = ['file_kwitansinarsum' => $kodekegiatan.'-kwitansinarsum.pdf'];
+        DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->update($dataUpdate);
     }
 
-    public function cetakusulan(Request $req){
-        $id_kegiatan = $req->get('id');
+    // public function cetakusulan(Request $req){
+    public function cetakusulan($id_kegiatan){
+        // $id_kegiatan = $req->get('id');
 
         $data['judulhalaman'] = 'Usulan Narasumber';
         $data['kegiatan'] = DB::table('kegiatan as keg')
@@ -693,10 +773,20 @@ class KegiatanController extends Controller
                             ->where('us.id_bagian', $data['kegiatan']->id_bagian)->first();
         $data['ppk'] = DB::table('ppk')->where('tahun', date('Y'))->first();
         $data['bendahara'] = DB::table('bendahara')->where('tahun', date('Y'))->first();
+        $kodekegiatan = $data['kegiatan']->kode_kegiatan;
 
         $pdf = PDF::loadView('kegiatan/cetakusulan', $data)->setPaper('a4');
 
-        return $pdf->stream('usulan-narsum.pdf');
+        // return $pdf->stream('usulan-narsum.pdf');
+        if (File::exists('public/uploads/kegiatan/'.$kodekegiatan)){
+            $pdf->save('public/uploads/kegiatan/'.$kodekegiatan.'/'.$kodekegiatan.'-usulannarsum.pdf');
+        }else{
+            File::makeDirectory('public/uploads/kegiatan/'.$kodekegiatan);
+            $pdf->save('public/uploads/kegiatan/'.$kodekegiatan.'/'.$kodekegiatan.'-usulannarsum.pdf');
+        }
+        
+        $dataUpdate = ['file_usulannarsum' => $kodekegiatan.'-usulannarsum.pdf'];
+        DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->update($dataUpdate);
     }
 
     public function cari(Request $req){
@@ -748,6 +838,15 @@ class KegiatanController extends Controller
     }
 
     public function cetakdokumen(Request $req){
+        $id_kegiatan = $req->get('id');
+
+        // $this->cetakkwitansi($id_kegiatan);
+        // $this->cetakusulan($id_kegiatan);
+
+        // Cek file undangan
+    }
+
+    public function cetakdokumen__(Request $req){
         $kodekegiatan = 'yZ6HS6xrth';
         
         $keg = DB::table('kegiatan')->where('kode_kegiatan', $kodekegiatan)->first();
