@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\File;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Riskihajar\Terbilang\Facades\Terbilang;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 
 class KegiatanController extends Controller
 {
@@ -916,7 +917,7 @@ class KegiatanController extends Controller
                         //echo "<div><h2>Merge Result:</h2><a href='" . $resultFileUrl . "' target='_blank'>" . $resultFileUrl . "</a></div>";
                         $dataUpdateFileDoc = ['file_compiledoc' => $resultFileUrl];
                         DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->update($dataUpdateFileDoc);
-                        echo "<script>window.open('".$resultFileUrl."', '_blank')</script>";
+                        echo "<script>window.open('".$resultFileUrl."', '_self')</script>";
                     }else{
                         // Display service reported error
                         echo "<p>Error: " . $json["message"] . "</p>"; 
@@ -934,7 +935,7 @@ class KegiatanController extends Controller
             // Cleanup
             curl_close($curl);
         }else{
-            echo "<script>window.open('".$kegiatan->file_compiledoc."', '_blank')</script>";
+            echo "<script>window.open('".$kegiatan->file_compiledoc."', '_self')</script>";
         }
     }
 
