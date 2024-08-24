@@ -154,16 +154,16 @@
                               </table>
                         </div>
                         <div class="modal-footer justify-content-between__">
-                          <a href="{{ url('kegiatan/cetakdokumen?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-outline-warning">
+                          <a href="{{ url('kegiatan/cetakdokumen?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-warning">
                             <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Berkas
                           </a>
-                          <a href="{{ url('kegiatan/cetakusulan?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-outline-primary">
+                          <a href="{{ url('kegiatan/cetakusulan?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-primary">
                             <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Usulan
                           </a>
-                          <a href="{{ url('kegiatan/cetakkwitansi?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-outline-danger">
+                          <a href="{{ url('kegiatan/cetakkwitansi?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-danger">
                             <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Kwitansi
                           </a>
-                          <button type="button" class="btn btn-outline-secondary">Keluar</button>
+                          <button type="button" class="btn btn-secondary">Keluar</button>
                       </div>
                     </div>
 

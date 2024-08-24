@@ -839,27 +839,106 @@ class KegiatanController extends Controller
 
     public function cetakdokumen(Request $req){
         $id_kegiatan = $req->get('id');
+		
+        $kegiatan = DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->first();
+        $kodeKegiatan = $kegiatan->kode_kegiatan;
+        $kegiatanDetail = DB::table('kegiatan_detail')->where('kode_kegiatan', $kodeKegiatan)->get();
+		
+		$dirName = $kegiatan->kode_kegiatan;
+		$filePath = 'https://sinara.den.go.id/public/uploads/kegiatan/'.$dirName.'/';
+		$filePathNarsum = 'https://sinara.den.go.id/public/uploads/narasumber/';
 
-        // $this->cetakkwitansi($id_kegiatan);
-        // $this->cetakusulan($id_kegiatan);
+		if ($kegiatan->file_undangan != ''){
+			$file_undangan = $filePath.$kegiatan->file_undangan;
+			$daftarFile[] = $file_undangan;
+		}
+		if ($kegiatan->file_laporankegiatan != ''){
+			$file_laporankegiatan = $filePath.$kegiatan->file_laporankegiatan;
+			$daftarFile[] = $file_laporankegiatan;
+		}
+		if ($kegiatan->file_usulannarsum != ''){
+			$file_usulannarsum = $filePath.$kegiatan->file_usulannarsum;
+			$daftarFile[] = $file_usulannarsum;
+		}
+		if ($kegiatan->file_kwitansinarsum != ''){
+			$file_kwitansinarsum = $filePath.$kegiatan->file_kwitansinarsum;
+			$daftarFile[] = $file_kwitansinarsum;
+		}
 
-        // Cek file undangan
+        foreach ($kegiatanDetail as $kegDet){
+			if ($kegDet->file_surattugas != ''){
+				$daftarFile[] = $filePath.$kegDet->file_surattugas;
+			}
+
+            $narasumber = DB::table('narasumber')->where('id_narasumber', $kegDet->id_narasumber)->first();
+			
+			if ($narasumber->file_npwp != ''){
+				$daftarFile[] = $filePathNarsum.$narasumber->file_npwp;
+			}
+        }
+
+        if ($kegiatan->file_compiledoc == ''){
+            //******** MERGE DOCUMENTS BEGIN WITH pdf.co 
+            $apiKey = 'indra_adv@yahoo.com_8MJymy4edgCFTV4sBHhCYkuU909JZyVyaHCQNINEJXqPxyXgXCU0SP2IzXtqkVNQ';
+            
+            // Create URL
+            $url = "https://api.pdf.co/v1/pdf/merge2";
+            
+            // Prepare requests params
+            $parameters = array();
+            $parameters["name"] = "result.pdf";
+            $parameters["url"] = join(",", $daftarFile);
+
+            // Create Json payload
+            $data = json_encode($parameters);
+
+            // Create request
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array("x-api-key: " . $apiKey, "Content-type: application/json"));
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+            // Execute request
+            $result = curl_exec($curl);
+            
+            if (curl_errno($curl) == 0){
+                $status_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                
+                if ($status_code == 200){
+                    $json = json_decode($result, true);
+                    
+                    if (!isset($json["error"]) || $json["error"] == false){
+                        $resultFileUrl = $json["url"];
+                        
+                        // Display link to the result document
+                        //echo "<div><h2>Merge Result:</h2><a href='" . $resultFileUrl . "' target='_blank'>" . $resultFileUrl . "</a></div>";
+                        $dataUpdateFileDoc = ['file_compiledoc' => $resultFileUrl];
+                        DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->update($dataUpdateFileDoc);
+                        echo "<script>window.open('".$resultFileUrl."', '_blank')</script>";
+                    }else{
+                        // Display service reported error
+                        echo "<p>Error: " . $json["message"] . "</p>"; 
+                    }
+                }else{
+                    // Display request error
+                    echo "<p>Status code: " . $status_code . "</p>"; 
+                    echo "<p>" . $result . "</p>"; 
+                }
+            }else{
+                // Display CURL error
+                echo "Error: " . curl_error($curl);
+            }
+            
+            // Cleanup
+            curl_close($curl);
+        }else{
+            echo "<script>window.open('".$kegiatan->file_compiledoc."', '_blank')</script>";
+        }
     }
 
-    public function cetakdokumen__(Request $req){
-        $kodekegiatan = 'yZ6HS6xrth';
-        
-        $keg = DB::table('kegiatan')->where('kode_kegiatan', $kodekegiatan)->first();
-        $keg = DB::table('kegiatan_detail')->where('kode_kegiatan', $kodekegiatan)->first();
-
-        echo "Nama Kegiatan: ".$keg->nama_kegiatan;
-    }
-
-    public function halo(){
-        return "Oke";
-    }
-
-    public function MergeDocs($uploadedFiles){
+    public function mergeDocs($uploadedFiles){
         $apiKey = 'indra_adv@yahoo.com_8MJymy4edgCFTV4sBHhCYkuU909JZyVyaHCQNINEJXqPxyXgXCU0SP2IzXtqkVNQ';
         
         // Create URL
