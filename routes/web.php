@@ -58,7 +58,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/kegiatan/cetakmatriks', [KegiatanController::class, 'cetakmatriks']);
     Route::get('/kegiatan/download', [KegiatanController::class, 'downloadfile']);
     Route::get('/kegiatan/downloadst', [KegiatanController::class, 'downloadst']);
-    Route::get('/kegiatan/cetakdokumen', [KegiatanController::class, 'cetakdokumen']);
+    Route::get('/kegiatan/downloaddokumen', [KegiatanController::class, 'downloaddokumen']);
 
     Route::get('/narasumber', [NarasumberController::class, 'index']);
     Route::get('/narasumber/getlist', [NarasumberController::class, 'getlist']);

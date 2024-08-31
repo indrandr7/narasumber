@@ -86,8 +86,8 @@
                             <a href="{{ url('kegiatan/cetakkwitansi?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak Kwitansi" target="_blank">
                               <i class="nav-icon fas fa-file-pdf"></i>
                             </a> --}}
-                            <a href="{{ url('kegiatan/cetakdokumen?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak Dokumen" target="_blank">
-                              &nbsp;<i class="nav-icon fas fa-file-pdf"></i>&nbsp;
+                            <a href="{{ url('kegiatan/downloaddokumen?id='.$keg->kode_kegiatan) }}" class="btn btn-xs btn-primary" title="Download Dokumen" target="_blank">
+                              <i class="nav-icon fas fa-download"></i>
                             </a>
                             <a href="{{ url('kegiatan/verifikasilihat/'.$keg->kode_kegiatan) }}" class="btn btn-xs btn-success" title="Lihat Detail Kegiatan">
                               <i class="nav-icon fas fa-check"></i>

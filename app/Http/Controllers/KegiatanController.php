@@ -18,6 +18,7 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Riskihajar\Terbilang\Facades\Terbilang;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+// use App\Http\Controllers\ZipArchive;
 
 class KegiatanController extends Controller
 {
@@ -302,16 +303,6 @@ class KegiatanController extends Controller
         return response()->download($filepath);
     }
 
-    public function narsumadd(Request $req){
-        $kodekegiatan = $req->get('kode');
-
-        $data['judulhalaman'] = 'Tambah Narasumber';
-        $data['kodekegiatan'] = $kodekegiatan;
-        $data['narasumber'] = DB::table('narasumber')->orderBy('namalengkap', 'asc');
-
-        return view('kegiatan.narsumadd', $data);
-    }
-
     public function getnarsum(Request $req){
         $id_narsum = $req->id_narsum;
 
@@ -386,14 +377,14 @@ class KegiatanController extends Controller
                     $warnacair = 'danger';
                 }
 
-                return '<span class="right badge badge-'.$warnatransfer.'">Transfer</span>&nbsp;<span class="right badge badge-'.$warnaverifikasi.'">Verified</span>&nbsp;<span class="right badge badge-'.$warnacair.'">Cair</span>';
+                return '<span class="right badge badge-'.$warnatransfer.'">Transfer</span>&nbsp;<span class="right badge badge-'.$warnacair.'">Cair</span>&nbsp;<span class="right badge badge-'.$warnaverifikasi.'">Verified</span>';
             })
             ->addColumn('action', function($row){
                 if (Session::get('sesLevel') == 'administrator' || Session::get('sesLevel') == 'operator'){
                     $actionBtn = '<button type="button" onclick="showEditFormNarsum(\''.$row->id_kegiatandetail.'\')" title="Edit" class="btn btn-xs btn-success m-b-0 ">
                                 <i class="nav-icon fas fa-edit"></i>
                             </button>
-                            <button type="button" onclick="hapus(\''.$row->id_kegiatandetail.'\')" title="Hapus" class="btn btn-xs btn-secondary m-b-0">
+                            <button type="button" onclick="hapus(\''.$row->id_kegiatandetail.'\', \''.$row->id_kegiatan.'\')" title="Hapus" class="btn btn-xs btn-secondary m-b-0">
                                 <i class="nav-icon fas fa-trash"></i>
                             </button>';
                 }else{
@@ -409,7 +400,19 @@ class KegiatanController extends Controller
         return $datatable;
     }
 
+    public function narsumadd(Request $req){
+        $kodekegiatan = $req->get('kode');
+
+        $data['judulhalaman'] = 'Tambah Narasumber';
+        $data['kodekegiatan'] = $kodekegiatan;
+        $data['narasumber'] = DB::table('narasumber')->orderBy('namalengkap', 'asc');
+        $data['kegiatan'] = DB::table('kegiatan')->where('kode_kegiatan', $kodekegiatan)->first();
+
+        return view('kegiatan.narsumadd', $data);
+    }
+
     public function narsumsave(Request $req){
+        $id_kegiatan = $req->post('id_kegiatan');
         $kodekegiatan = $req->post('kodekegiatan');
         $narasumber = $req->post('narasumber');
         $jumlahjam = $req->post('jumlahjam');
@@ -459,6 +462,7 @@ class KegiatanController extends Controller
 
         $data = [
                 'id_narasumber' => $narasumber,
+                'id_kegiatan' => $id_kegiatan,
                 'kode_kegiatan' => $kodekegiatan,
                 'jumlah_jam' => $jumlahjam,
                 'honor_satujam' => $honorperjam,
@@ -479,6 +483,9 @@ class KegiatanController extends Controller
                 $simpan = DB::table('kegiatan_detail')->insert($data);
 
                 if ($simpan){
+                    $this->createpdf_usulan($id_kegiatan);
+                    $this->createpdf_kwitansi($id_kegiatan);
+
                     $response = ['result'=>'success', 'message'=>'Save successfully'];
                 }else{
                     $response = ['result'=>'failed', 'message'=>'Save failed'];
@@ -515,6 +522,7 @@ class KegiatanController extends Controller
     }
 
     public function narsumsaveupdate(Request $req){
+        $id_kegiatan = $req->post('id_kegiatan');
         $id_kegiatandetail = $req->post('id_kegiatandetail');
         $kodekegiatan = $req->post('kodekegiatan');
         $jumlahjam = $req->post('jumlahjam');
@@ -525,7 +533,6 @@ class KegiatanController extends Controller
         $nominalperjadin = ($req->post('nominalperjadin') == '' ? '0' : Gudangfungsi::normalNumber($req->post('nominalperjadin')));
         $statustransfer = $req->post('statustransfer');
         $statuscair = $req->post('statuscair');
-        $tanggaltransfer = Gudangfungsi::formtomysql($req->post('tanggaltransfer'));
         $nomorspm = $req->post('nomorspm');
 
         if ($req->hasFile('surattugas')){
@@ -545,7 +552,7 @@ class KegiatanController extends Controller
         }else{
             $namafileSurattugas = $req->post('surattugas_current');
         }
-
+        
         if ($req->hasFile('kwitansiperjadin')){
             $file = $req->file('kwitansiperjadin');
             $namafileFull = $file->getClientOriginalName();
@@ -600,16 +607,25 @@ class KegiatanController extends Controller
                 'file_kwitansi' => $namafileKwitansiperjadin,
                 'is_transfer' => $statustransfer,
                 'is_cair' => $statuscair,
-                'tanggal_transfer' => $tanggaltransfer,
                 'no_spm' => $nomorspm,
                 'file_transfer' => $namafile_buktitransfer,
                 'updated_at' => date('Y-m-d H:i:s')
                 ];
+
+        if ($req->post('tanggaltransfer') != ''){
+            $before = array_splice($data, 0, 9);
+            $dataInsert = ['tanggal_transfer' => Gudangfungsi::formtomysql($req->post('tanggaltransfer'))];
+            
+            $data = $before + $dataInsert + $data;
+        }
         
         try{
             $simpan = DB::table('kegiatan_detail')->where('id_kegiatandetail', $id_kegiatandetail)->update($data);
 
             if ($simpan){
+                $this->createpdf_usulan($id_kegiatan);
+                $this->createpdf_kwitansi($id_kegiatan);
+
                 $response = ['result'=>'success', 'message'=>'Save successfully'];
             }else{
                 $response = ['result'=>'failed', 'message'=>'Save failed'];
@@ -618,6 +634,8 @@ class KegiatanController extends Controller
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062){
                 $response = ['result'=>'failed', 'message'=>'Duplicate key found.']; 
+            }else{
+                $response = ['result'=>'failed', 'message'=>'Error code: '.$errorCode];
             }
         }
 
@@ -625,33 +643,39 @@ class KegiatanController extends Controller
     }
 
     public function narsumdelete(Request $req){
-        $id_kegiatandetail = $req->post('id');
+        $id_kegiatandetail = $req->post('id_kegiatandetail');
+        $id_kegiatan = $req->post('id_kegiatan');
 
-        $data = DB::table('kegiatan_detail')->where('id_kegiatandetail', $id_kegiatandetail);
-        if ($data->count() != 0){
-            $file_surattugas = $data->first()->file_surattugas;
-            $file_kwitansi = $data->first()->file_kwitansi;
-            $file_transfer = $data->first()->file_transfer;
+        echo "IDKegiatan: ".$id_kegiatan;
 
-            if (File::exists("public/uploads/kegiatan/".$file_surattugas) == true){
-                File::delete("public/uploads/kegiatan/".$file_surattugas);
-            }
-            if (File::exists("public/uploads/kegiatan/".$file_kwitansi) == true){
-                File::delete("public/uploads/kegiatan/".$file_kwitansi);
-            }
-            if (File::exists("public/uploads/kegiatan/".$file_transfer) == true){
-                File::delete("public/uploads/kegiatan/".$file_transfer);
-            }
-        }
+        // $data = DB::table('kegiatan_detail')->where('id_kegiatandetail', $id_kegiatandetail);
+        // if ($data->count() != 0){
+        //     $file_surattugas = $data->first()->file_surattugas;
+        //     $file_kwitansi = $data->first()->file_kwitansi;
+        //     $file_transfer = $data->first()->file_transfer;
 
-        $hapus = DB::table('kegiatan_detail')->where('id_kegiatandetail', $id_kegiatandetail)->delete();
-        if ($hapus){
-            $response = ['result'=>'success', 'message'=>'Deleting data successfully'];
-        }else{
-            $response = ['result'=>'failed', 'message'=>'Deleteting data failed'];
-        }
+        //     if (File::exists("public/uploads/kegiatan/".$file_surattugas) == true){
+        //         File::delete("public/uploads/kegiatan/".$file_surattugas);
+        //     }
+        //     if (File::exists("public/uploads/kegiatan/".$file_kwitansi) == true){
+        //         File::delete("public/uploads/kegiatan/".$file_kwitansi);
+        //     }
+        //     if (File::exists("public/uploads/kegiatan/".$file_transfer) == true){
+        //         File::delete("public/uploads/kegiatan/".$file_transfer);
+        //     }
+        // }
 
-        return response()->json($response);
+        // $hapus = DB::table('kegiatan_detail')->where('id_kegiatandetail', $id_kegiatandetail)->delete();
+        // // if ($hapus){
+        //     $this->createpdf_usulan($id_kegiatan);
+            // $this->createpdf_kwitansi($id_kegiatan);
+
+            // $response = ['result'=>'success', 'message'=>'Deleting data successfully'];
+        // }else{
+        //     $response = ['result'=>'failed', 'message'=>'Deleteting data failed'];
+        // }
+
+        // return response()->json($response);
     }
 
     public function verifikasi(){
@@ -720,14 +744,13 @@ class KegiatanController extends Controller
         return response()->json($response);
     }
 
-    // public function cetakkwitansi(Request $req){
-    public function cetakkwitansi($id_kegiatan){
-        // $id_kegiatan = $req->get('id');
+    public function cetakkwitansi(Request $req){
+        $kode_kegiatan = $req->get('id');
 
         $data['judulhalaman'] = 'Kwitansi Honor Narsum';
         $data['kegiatan'] = DB::table('kegiatan as keg')
                             ->join('mak as ma', 'keg.id_mak', '=', 'ma.id_mak')
-                            ->where('keg.id_kegiatan', $id_kegiatan)->first();
+                            ->where('keg.kode_kegiatan', $kode_kegiatan)->first();
         $data['kegdetail'] = DB::table('kegiatan_detail as det')
                              ->join('narasumber as nar', 'det.id_narasumber', '=', 'nar.id_narasumber')
                              ->where('det.kode_kegiatan', $data['kegiatan']->kode_kegiatan)->get();
@@ -740,22 +763,38 @@ class KegiatanController extends Controller
 
         $pdf = PDF::loadView('kegiatan/cetakkwitansi', $data)->setPaper('a4', 'landscape');
 
-        // return $pdf->stream('kwitansi-narsum.pdf');  //Jika ingin menampilkan pdf ke satu halaman
-        if (File::exists('public/uploads/kegiatan/'.$kodekegiatan)){
-            $pdf->save('public/uploads/kegiatan/'.$kodekegiatan.'/'.$kodekegiatan.'-kwitansinarsum.pdf');    
-        }else{
-            File::makeDirectory('public/uploads/kegiatan/'.$kodekegiatan);
-            $pdf->save('public/uploads/kegiatan/'.$kodekegiatan.'/'.$kodekegiatan.'-kwitansinarsum.pdf');
-        }
-        
-        $dataUpdate = ['file_kwitansinarsum' => $kodekegiatan.'-kwitansinarsum.pdf'];
-        DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->update($dataUpdate);
+        return $pdf->stream('kwitansi-narsum.pdf');  //Jika ingin menampilkan pdf ke satu halaman
     }
 
-    // public function cetakusulan(Request $req){
-    public function cetakusulan($id_kegiatan){
-        // $id_kegiatan = $req->get('id');
+    public function cetakusulan(Request $req){
+        $kode_kegiatan = $req->get('id');
 
+        $data['judulhalaman'] = 'Usulan Narasumber';
+        $data['kegiatan'] = DB::table('kegiatan as keg')
+                            ->join('mak as ma', 'keg.id_mak', '=', 'ma.id_mak')
+                            ->where('keg.kode_kegiatan', $kode_kegiatan)->first();
+        $data['kegdetail'] = DB::table('kegiatan_detail as det')
+                             ->join('narasumber as nar', 'det.id_narasumber', '=', 'nar.id_narasumber')
+                             ->join('golongan as gol', 'nar.id_golongan', '=', 'gol.id_golongan')
+                             ->where('det.kode_kegiatan', $data['kegiatan']->kode_kegiatan)->get();
+        $data['sumnominal'] = DB::table('kegiatan_detail')
+                                 ->select(DB::raw('SUM(jumlahhonor) AS jumlah_honor, SUM(potongan_pph) AS jumlah_potongan, SUM(jumlah_bayar) AS jumlah_dibayar'))
+                                 ->where('kode_kegiatan', $data['kegiatan']->kode_kegiatan)->first();
+        $data['pejabat'] = DB::table('users as us')
+                            ->select('bg.nama_pejabat as kabag', 'bg.nip as kabagnip', 'nama_bagian', 'nama_biro', 'br.nama_pejabat as kabiro', 'br.nip as kabironip')
+                            ->join('bagian as bg', 'us.id_bagian', '=', 'bg.id_bagian')
+                            ->join('biro as br', 'br.id_biro', '=', 'bg.id_biro')
+                            ->where('us.id_bagian', $data['kegiatan']->id_bagian)->first();
+        $data['ppk'] = DB::table('ppk')->where('tahun', date('Y'))->first();
+        $data['bendahara'] = DB::table('bendahara')->where('tahun', date('Y'))->first();
+        $kodekegiatan = $data['kegiatan']->kode_kegiatan;
+
+        $pdf = PDF::loadView('kegiatan/cetakusulan', $data)->setPaper('a4');
+
+        return $pdf->stream('usulan-narsum.pdf');
+    }
+
+    public function createpdf_usulan($id_kegiatan){
         $data['judulhalaman'] = 'Usulan Narasumber';
         $data['kegiatan'] = DB::table('kegiatan as keg')
                             ->join('mak as ma', 'keg.id_mak', '=', 'ma.id_mak')
@@ -787,6 +826,35 @@ class KegiatanController extends Controller
         }
         
         $dataUpdate = ['file_usulannarsum' => $kodekegiatan.'-usulannarsum.pdf'];
+        DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->update($dataUpdate);
+    }
+
+    public function createpdf_kwitansi($id_kegiatan){
+        $data['judulhalaman'] = 'Kwitansi Honor Narsum';
+        $data['kegiatan'] = DB::table('kegiatan as keg')
+                            ->join('mak as ma', 'keg.id_mak', '=', 'ma.id_mak')
+                            ->where('keg.id_kegiatan', $id_kegiatan)->first();
+        $data['kegdetail'] = DB::table('kegiatan_detail as det')
+                                ->join('narasumber as nar', 'det.id_narasumber', '=', 'nar.id_narasumber')
+                                ->where('det.kode_kegiatan', $data['kegiatan']->kode_kegiatan)->get();
+        $data['sumnominal'] = DB::table('kegiatan_detail')
+                                    ->select(DB::raw('SUM(jumlahhonor) AS jumlah_honor, SUM(potongan_pph) AS jumlah_potongan, SUM(jumlah_bayar) AS jumlah_dibayar'))
+                                    ->where('kode_kegiatan', $data['kegiatan']->kode_kegiatan)->first();
+        $data['ppk'] = DB::table('ppk')->where('tahun', date('Y'))->first();
+        $data['bendahara'] = DB::table('bendahara')->where('tahun', date('Y'))->first();
+        $kodekegiatan = $data['kegiatan']->kode_kegiatan;
+
+        $pdf = PDF::loadView('kegiatan/cetakkwitansi', $data)->setPaper('a4', 'landscape');
+
+        // return $pdf->stream('kwitansi-narsum.pdf');  //Jika ingin menampilkan pdf ke satu halaman
+        if (File::exists('public/uploads/kegiatan/'.$kodekegiatan)){
+            $pdf->save('public/uploads/kegiatan/'.$kodekegiatan.'/'.$kodekegiatan.'-kwitansinarsum.pdf');    
+        }else{
+            File::makeDirectory('public/uploads/kegiatan/'.$kodekegiatan);
+            $pdf->save('public/uploads/kegiatan/'.$kodekegiatan.'/'.$kodekegiatan.'-kwitansinarsum.pdf');
+        }
+        
+        $dataUpdate = ['file_kwitansinarsum' => $kodekegiatan.'-kwitansinarsum.pdf'];
         DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->update($dataUpdate);
     }
 
@@ -838,16 +906,18 @@ class KegiatanController extends Controller
         return $pdf->stream('matriks-narsum.pdf');
     }
 
-    public function cetakdokumen(Request $req){
-        $id_kegiatan = $req->get('id');
+    public function downloaddokumen(Request $req){
+        $kodeKegiatan = $req->get('id');
 		
-        $kegiatan = DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->first();
-        $kodeKegiatan = $kegiatan->kode_kegiatan;
+        $kegiatan = DB::table('kegiatan')->where('kode_kegiatan', $kodeKegiatan)->first();
         $kegiatanDetail = DB::table('kegiatan_detail')->where('kode_kegiatan', $kodeKegiatan)->get();
 		
-		$dirName = $kegiatan->kode_kegiatan;
-		$filePath = 'https://sinara.den.go.id/public/uploads/kegiatan/'.$dirName.'/';
-		$filePathNarsum = 'https://sinara.den.go.id/public/uploads/narasumber/';
+		$dirName = $kodeKegiatan;
+        // echo "dirName: ".$dirName;
+		// $filePath = 'https://sinara.den.go.id/public/uploads/kegiatan/'.$dirName.'/';
+		// $filePathNarsum = 'https://sinara.den.go.id/public/uploads/narasumber/';
+        $filePath = public_path('uploads/kegiatan/'.$dirName.'/'); //'https://sinara.den.go.id/public/uploads/kegiatan/'.$dirName.'/';
+		$filePathNarsum = public_path('uploads/narasumber/'); //'https://sinara.den.go.id/public/uploads/narasumber/';
 
 		if ($kegiatan->file_undangan != ''){
 			$file_undangan = $filePath.$kegiatan->file_undangan;
@@ -878,65 +948,81 @@ class KegiatanController extends Controller
 			}
         }
 
-        if ($kegiatan->file_compiledoc == ''){
-            //******** MERGE DOCUMENTS BEGIN WITH pdf.co 
-            $apiKey = 'indra_adv@yahoo.com_8MJymy4edgCFTV4sBHhCYkuU909JZyVyaHCQNINEJXqPxyXgXCU0SP2IzXtqkVNQ';
-            
-            // Create URL
-            $url = "https://api.pdf.co/v1/pdf/merge2";
-            
-            // Prepare requests params
-            $parameters = array();
-            $parameters["name"] = "result.pdf";
-            $parameters["url"] = join(",", $daftarFile);
+        $zip = new \ZipArchive();
+        $fileName = $filePath.'dokumen-kegiatan-'.$dirName.'.zip';
+        
+        if ($zip->open($fileName, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE){
+            $files = $daftarFile;
 
-            // Create Json payload
-            $data = json_encode($parameters);
-
-            // Create request
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array("x-api-key: " . $apiKey, "Content-type: application/json"));
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_POST, true);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-
-            // Execute request
-            $result = curl_exec($curl);
-            
-            if (curl_errno($curl) == 0){
-                $status_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-                
-                if ($status_code == 200){
-                    $json = json_decode($result, true);
-                    
-                    if (!isset($json["error"]) || $json["error"] == false){
-                        $resultFileUrl = $json["url"];
-                        
-                        // Display link to the result document
-                        //echo "<div><h2>Merge Result:</h2><a href='" . $resultFileUrl . "' target='_blank'>" . $resultFileUrl . "</a></div>";
-                        $dataUpdateFileDoc = ['file_compiledoc' => $resultFileUrl];
-                        DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->update($dataUpdateFileDoc);
-                        echo "<script>window.open('".$resultFileUrl."', '_self')</script>";
-                    }else{
-                        // Display service reported error
-                        echo "<p>Error: " . $json["message"] . "</p>"; 
-                    }
-                }else{
-                    // Display request error
-                    echo "<p>Status code: " . $status_code . "</p>"; 
-                    echo "<p>" . $result . "</p>"; 
-                }
-            }else{
-                // Display CURL error
-                echo "Error: " . curl_error($curl);
+            foreach($files as $key => $value){
+                $relativeNameInZipFile = basename($value);
+                $zip->addFile($value, $relativeNameInZipFile);
             }
-            
-            // Cleanup
-            curl_close($curl);
-        }else{
-            echo "<script>window.open('".$kegiatan->file_compiledoc."', '_self')</script>";
+            $zip->close();
         }
+
+        return response()->download($fileName);
+
+
+        // if ($kegiatan->file_compiledoc == ''){
+        //     //******** MERGE DOCUMENTS BEGIN WITH pdf.co 
+        //     $apiKey = 'indra_adv@yahoo.com_8MJymy4edgCFTV4sBHhCYkuU909JZyVyaHCQNINEJXqPxyXgXCU0SP2IzXtqkVNQ';
+            
+        //     // Create URL
+        //     $url = "https://api.pdf.co/v1/pdf/merge2";
+            
+        //     // Prepare requests params
+        //     $parameters = array();
+        //     $parameters["name"] = "result.pdf";
+        //     $parameters["url"] = join(",", $daftarFile);
+
+        //     // Create Json payload
+        //     $data = json_encode($parameters);
+
+        //     // Create request
+        //     $curl = curl_init();
+        //     curl_setopt($curl, CURLOPT_HTTPHEADER, array("x-api-key: " . $apiKey, "Content-type: application/json"));
+        //     curl_setopt($curl, CURLOPT_URL, $url);
+        //     curl_setopt($curl, CURLOPT_POST, true);
+        //     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        //     curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+        //     // Execute request
+        //     $result = curl_exec($curl);
+            
+        //     if (curl_errno($curl) == 0){
+        //         $status_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                
+        //         if ($status_code == 200){
+        //             $json = json_decode($result, true);
+                    
+        //             if (!isset($json["error"]) || $json["error"] == false){
+        //                 $resultFileUrl = $json["url"];
+                        
+        //                 // Display link to the result document
+        //                 //echo "<div><h2>Merge Result:</h2><a href='" . $resultFileUrl . "' target='_blank'>" . $resultFileUrl . "</a></div>";
+        //                 $dataUpdateFileDoc = ['file_compiledoc' => $resultFileUrl];
+        //                 DB::table('kegiatan')->where('id_kegiatan', $id_kegiatan)->update($dataUpdateFileDoc);
+        //                 echo "<script>window.open('".$resultFileUrl."', '_self')</script>";
+        //             }else{
+        //                 // Display service reported error
+        //                 echo "<p>Error: " . $json["message"] . "</p>"; 
+        //             }
+        //         }else{
+        //             // Display request error
+        //             echo "<p>Status code: " . $status_code . "</p>"; 
+        //             echo "<p>" . $result . "</p>"; 
+        //         }
+        //     }else{
+        //         // Display CURL error
+        //         echo "Error: " . curl_error($curl);
+        //     }
+            
+        //     // Cleanup
+        //     curl_close($curl);
+        // }else{
+        //     echo "<script>window.open('".$kegiatan->file_compiledoc."', '_self')</script>";
+        // }
     }
 
     public function mergeDocs($uploadedFiles){

@@ -40,6 +40,7 @@
                                         <label for="judulkegiatan" class="col-sm-3 col-form-label">Judul kegiatan</label>
                                         <div class="col-sm-9">
                                             <input type="hidden" class="form-control" id="kodekegiatan" name="kodekegiatan" value="{{ $kodekegiatan }}">
+                                            <input type="hidden" class="form-control" id="id_kegiatan" name="id_kegiatan" value="{{ $kegiatan->id_kegiatan }}">
                                             <input type="input" class="form-control" id="judulkegiatan" name="judulkegiatan" value="{{ $kegiatan->nama_kegiatan }}">
                                         </div>
                                     </div>
@@ -154,16 +155,18 @@
                               </table>
                         </div>
                         <div class="modal-footer justify-content-between__">
-                          <a href="{{ url('kegiatan/cetakdokumen?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-warning">
-                            <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Berkas
+                          <a href="{{ url('kegiatan/downloaddokumen?id='.$kegiatan->kode_kegiatan) }}" target="_blank" type="button" class="btn btn-warning">
+                            <i class="nav-icon fas fa-download"></i>&nbsp;&nbsp;Download Dokumen
                           </a>
-                          <a href="{{ url('kegiatan/cetakusulan?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-primary">
-                            <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Usulan
+                          <a href="{{ url('kegiatan/cetakusulan?id='.$kegiatan->kode_kegiatan) }}" target="_blank" type="button" class="btn btn-primary">
+                            <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Usulan
                           </a>
-                          <a href="{{ url('kegiatan/cetakkwitansi?id='.$kegiatan->id_kegiatan) }}" target="_blank" type="button" class="btn btn-danger">
-                            <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Cetak Kwitansi
+                          <a href="{{ url('kegiatan/cetakkwitansi?id='.$kegiatan->kode_kegiatan) }}" target="_blank" type="button" class="btn btn-danger">
+                            <i class="nav-icon fas fa-file-pdf"></i>&nbsp;&nbsp;Kwitansi
                           </a>
-                          <button type="button" class="btn btn-secondary">Keluar</button>
+                          <a href="{{ url('kegiatan') }}" type="button" class="btn btn-secondary">
+                            <i class="nav-icon fas fa-close"></i>&nbsp;&nbsp;Keluar
+                          </a>
                       </div>
                     </div>
 
@@ -200,45 +203,45 @@
         $('#tabeldata').DataTable().ajax.reload();
     }
 
-    function hapus(id){
-		event.preventDefault(); // prevent form submit
+    function hapus(id_kegiatandetail, id_kegiatan){
+      event.preventDefault(); // prevent form submit
 
-		swal({
-			title: "Apakah kamu yakin?",
-			text: "Kamu akan kehilangan data untuk selamanya! ",
-			icon: "warning",
-			buttons: {
-						confirm: 'Ya',
-						cancel: 'Batal'
-					},
-			dangerMode: false,
-		}).then((willDelete) => {
-			if (willDelete) {
-				$.ajax({
-					url: "{{ url('/kegiatan/narsumdelete') }}",
-					type: 'POST',
-					data: {"id":id},
-					dataType: 'json',
-                    // processData: false,
-                    // contentType: false,
-					success: function(resp){
-						if (resp.result == "success"){
-							swal({
-									title: "",
-									text: resp.message,
-									icon: "success",
-								}).then(function(){
-									reloadTable();
-								}
-							);
-						}
-					},
-					error: function(jqXHR, textStatus, errorThrown){
-						console.log('jqXMLHTTReq: '+jqXHR+', Status: '+textStatus+', Error: '+errorThrown);
-					}
-		   		});
-			}
-		});
+      swal({
+        title: "Apakah kamu yakin?",
+        text: "Kamu akan kehilangan data untuk selamanya! ",
+        icon: "warning",
+        buttons: {
+              confirm: 'Ya',
+              cancel: 'Batal'
+            },
+        dangerMode: false,
+      }).then((willDelete) => {
+        if (willDelete) {
+          $.ajax({
+            url: "{{ url('/kegiatan/narsumdelete') }}",
+            type: 'POST',
+            data: {"id_kegiatandetail":id_kegiatandetail, "id_kegiatan":id_kegiatan},
+            dataType: 'json',
+                      // processData: false,
+                      // contentType: false,
+            success: function(resp){
+              if (resp.result == "success"){
+                swal({
+                    title: "",
+                    text: resp.message,
+                    icon: "success",
+                  }).then(function(){
+                    reloadTable();
+                  }
+                );
+              }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+              console.log('jqXMLHTTReq: '+jqXHR+', Status: '+textStatus+', Error: '+errorThrown);
+            }
+            });
+        }
+      });
     }
 
     $.validator.setDefaults({

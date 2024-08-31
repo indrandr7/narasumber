@@ -46,12 +46,12 @@
               </button>
             </div>
             <div class="form-group row" style="margin-right: 10px;">
-              <a href="{{ url('kegiatan/cetakmatrik') }}" target="_blank" class="btn btn-sidebar btn-outline-danger">
+              <a href="{{ url('kegiatan/cetakmatrik') }}" target="_blank" class="btn btn-sidebar btn-danger">
                 <i class="fas fa-file-pdf"></i> Cetak Matrik
               </a>
             </div>
             <div class="form-group row" style="margin-right: 10px;">
-              <a href="{{ url('kegiatan/add') }}" class="btn btn-sidebar btn-outline-success">
+              <a href="{{ url('kegiatan/add') }}" class="btn btn-sidebar btn-primary">
                 <i class="fas fa-plus fa-fw"></i> Tambah
               </a>
             </div>
@@ -156,8 +156,8 @@
                             <a href="{{ url('kegiatan/cetakkwitansi?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak Kwitansi" target="_blank">
                               <i class="nav-icon fas fa-file-pdf"></i>
                             </a> --}}
-                            <a href="{{ url('kegiatan/cetakdokumen?id='.$keg->id_kegiatan) }}" class="btn btn-xs btn-primary" title="Cetak dokumen" target="_blank">
-                              &nbsp;<i class="nav-icon fas fa-file-pdf"></i>&nbsp;
+                            <a href="{{ url('kegiatan/downloaddokumen?id='.$keg->kode_kegiatan) }}" class="btn btn-xs btn-primary" title="Download dokumen" target="_self">
+                              <i class="nav-icon fas fa-download"></i>
                             </a>
                             <a href="{{ url('kegiatan/edit/'.$keg->kode_kegiatan) }}" class="btn btn-xs btn-success" title="Edit">
                               <i class="nav-icon fas fa-edit"></i>
