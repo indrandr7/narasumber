@@ -14,7 +14,15 @@ use Illuminate\Support\Facades\Session;
 class LoginController extends Controller
 {
     public function index(){
-        return view('login');
+        if (Session::has('sesUserID')){
+            if (Session::get('sesLevel') == 'administrator'){
+                return redirect()->intended('kegiatan');
+            }else{
+                return redirect()->intended('kegiatan/verifikasi');
+            }
+        }else{
+            return view('login');
+        }
     }
 
     public function authenticate(Request $req){

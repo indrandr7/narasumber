@@ -154,7 +154,7 @@
         $('#tabeldata').DataTable().ajax.reload();
     }
 
-    function hapus(id){
+    function hapus(id_kegiatandetail, id_kegiatan){
 		event.preventDefault(); // prevent form submit
 
 		swal({
@@ -171,7 +171,7 @@
 				$.ajax({
 					url: "{{ url('/kegiatan/narsumdelete') }}",
 					type: 'POST',
-					data: {"id":id},
+                    data: {"id_kegiatandetail":id_kegiatandetail, "id_kegiatan":id_kegiatan},
 					dataType: 'json',
                     // processData: false,
                     // contentType: false,
@@ -217,25 +217,28 @@
             success: function(resp){
                 if (resp.result == "success"){
                   toastr.success(resp.message)
+
+                  var kode_kegiatan = resp.data.kode_kegiatan;
+                  window.location.href = "{{ url('/kegiatan/edit') }}"+"/"+kode_kegiatan;
                   
-                  $('#formmode').val('update')
-                  $('#divFile').html('')
+                //   $('#formmode').val('update')
+                //   $('#divFile').html('')
 
-                  var fileUndangan = resp.data.file_undangan;
-                  var id_kegiatan = resp.data.id_kegiatan;
-                  var html;
-                  $('#file_undangan').val('')
-                  $('#file_undangancurrent').val(fileUndangan)
+                //   var fileUndangan = resp.data.file_undangan;
+                //   var id_kegiatan = resp.data.id_kegiatan;
+                //   var html;
+                //   $('#file_undangan').val('')
+                //   $('#file_undangancurrent').val(fileUndangan)
 
-                  if (fileUndangan == ''){
-                    html = $('#divFile').html('<label for="file_undangan" class="col-sm-3 col-form-label"></label><div class="col-sm-9"><i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;File not available</div>')
-                  }else{
-                    html = $('#divFile').html('<label for="file_undangan" class="col-sm-3 col-form-label"></label><div class="col-sm-9"><a href="{{ url('kegiatan/download?tipe=kegiatan&klm=undangan&id=') }}'+id_kegiatan+'"><i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;'+fileUndangan+'</a></div>')
-                  }
+                //   if (fileUndangan == ''){
+                //     html = $('#divFile').html('<label for="file_undangan" class="col-sm-3 col-form-label"></label><div class="col-sm-9"><i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;File not available</div>')
+                //   }else{
+                //     html = $('#divFile').html('<label for="file_undangan" class="col-sm-3 col-form-label"></label><div class="col-sm-9"><a href="{{ url('kegiatan/download?tipe=kegiatan&klm=undangan&id=') }}'+id_kegiatan+'"><i class="nav-icon fas fa-cloud-download-alt"></i>&nbsp;&nbsp;'+fileUndangan+'</a></div>')
+                //   }
                 
-                  $('#btnTambahNarsum').prop('disabled', false)
-                  $('#btnMuatUlang').prop('disabled', false)
-                  reloadTable()
+                //   $('#btnTambahNarsum').prop('disabled', false)
+                //   $('#btnMuatUlang').prop('disabled', false)
+                //   reloadTable()
                 }else{
                   toastr.error(resp.message);
                 }

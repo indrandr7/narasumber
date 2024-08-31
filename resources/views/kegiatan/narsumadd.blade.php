@@ -20,6 +20,7 @@
           <div class="form-group row">
             <label for="narasumber" class="col-sm-3 col-form-label">Nama Narasumber</label>
             <div class="col-sm-9">
+                <input type="hidden" class="form-control" id="id_kegiatan" name="id_kegiatan" value="{{ $kegiatan->id_kegiatan }}">
                 <input type="hidden" class="form-control" id="kodekegiatan" name="kodekegiatan" value="{{ $kodekegiatan }}">
                 <select class="form-control select2bs4" id="narasumber" name="narasumber" style="width: 100%;">
                   <option value="">Pilih Narasumber</option>
